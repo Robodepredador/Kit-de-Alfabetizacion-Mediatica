@@ -153,6 +153,12 @@ button,input,textarea{font-family:inherit}
         <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14 M12 5l7 7-7 7"></path></svg>
       </button>
       <p style="margin:0;font-size:20px;color:#5A4E48">Primero verá un video corto de 1 minuto.</p>
+      <sc-if value="{{ saludoBloqueado }}" hint-placeholder-val="{{ false }}">
+      <button onClick="{{ listenWelcome.onClick }}" aria-pressed="{{ listenWelcome.on }}" style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:64px;padding:10px 22px;border-radius:10px;background:{{ listenWelcome.bg }};color:{{ listenWelcome.fg }};border:3px solid #07336D;font-size:24px;font-weight:700;cursor:pointer" style-focus="outline:4px solid #07336D;outline-offset:3px">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ listenWelcome.icon }}"></path></svg>
+        <span>{{ listenWelcome.label }}</span>
+      </button>
+      </sc-if>
     </div>
   </div>
 </main>
@@ -808,7 +814,7 @@ const SCENES = [
 const SCREENS = { 'Bienvenida': 'welcome', 'Video': 'video', 'Menú': 'menu', 'Aprender': 'learn', 'Tema': 'lesson', 'Conversar': 'chat', 'Practicar': 'practice', 'Encuesta': 'survey', 'Gracias': 'thanks' };
 
 class Component extends DCLogic {
-  state = { screen: null, lesson: 0, step: 0, act: 0, answers: {}, done: false, from: 'menu', videoFrom: 'welcome', msgs: null, draft: '', speaking: null, listening: null, votes: {}, comment: '', notice: '', vScene: 0, vPlaying: false, vEnded: false };
+  state = { screen: null, lesson: 0, step: 0, act: 0, answers: {}, done: false, from: 'menu', videoFrom: 'welcome', msgs: null, draft: '', speaking: null, listening: null, votes: {}, comment: '', notice: '', vScene: 0, vPlaying: false, vEnded: false, saludoBloqueado: false };
 
   componentDidMount() { document.documentElement.lang = 'es'; this.saludar(); }
 
@@ -833,10 +839,25 @@ class Component extends DCLogic {
 
   saludar() {
     if (this.screen() !== 'welcome') return;
+    // Se reinicia en cada entrada: si no, basta que el saludo suene una vez
+    // para que la deteccion de bloqueo no vuelva a dispararse nunca.
+    this.saludoSono = false;
     this.speak('welcome', textoSaludo(this.name()), null, true);
     const c = this.clip;
-    if (c) c.addEventListener('playing', () => { this.saludoSono = true; }, { once: true });
-    else this.saludoSono = true;
+    if (c) {
+      c.addEventListener('playing', () => {
+        this.saludoSono = true;
+        if (this.state.saludoBloqueado) this.setState({ saludoBloqueado: false });
+      }, { once: true });
+      // Si en medio segundo no empezo, el navegador lo bloqueo: entonces vuelve
+      // a aparecer el boton, porque quedarse sin ninguna forma de oir el saludo
+      // es peor que mostrarlo. Si luego suena, el boton se va solo.
+      setTimeout(() => {
+        if (!this.saludoSono && this.screen() === 'welcome' && !this.state.saludoBloqueado) {
+          this.setState({ saludoBloqueado: true });
+        }
+      }, 500);
+    } else this.saludoSono = true;
     if (this.saludoArmado) return;
     this.saludoArmado = true;
     const alPrimerToque = () => {
@@ -1072,6 +1093,8 @@ class Component extends DCLogic {
       goSurvey: () => this.go('survey'),
       goThanks: () => this.go('thanks'),
       goPracticeChat: () => this.startPractice('chat', 0),
+      saludoBloqueado: st.saludoBloqueado,
+      listenWelcome: this.listen('welcome', textoSaludo(name)),
       startTour: () => this.openVideo('welcome'),
       openVideo: () => this.openVideo('menu'),
 
