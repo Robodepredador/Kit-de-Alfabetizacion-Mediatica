@@ -646,7 +646,10 @@ function star(x, y, s, delay, fill, still) {
 // grabando el kit por partes sin romper nada.
 var AUDIO_CLIPS = {};
 if (typeof fetch === 'function') {
-  fetch('./audio/manifest.json').then(function (r) { return r.ok ? r.json() : null; })
+  // no-store: si la pagina se cargo mientras se grababan clips, el navegador
+  // podria servir un manifiesto viejo y mandar al sintetizador textos que ya
+  // tienen audio. Recargar debe bastar siempre para ver el estado real.
+  fetch('./audio/manifest.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; })
     .then(function (m) { if (m) AUDIO_CLIPS = m; }).catch(function () {});
 }
 function fnv1a(s) {

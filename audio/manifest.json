@@ -58,5 +58,45 @@
   "tipo": "actividad",
   "texto": "Imagen hecha con inteligencia artificial: una pareja de personas mayores, sentadas en silencio en un cuarto oscuro. Miran por la ventana, tristes. ¿Qué transmite esta imagen y qué le falta? Opción A: Tristeza y soledad. Le falta mostrar otras formas de vivir la vejez. Opción B: Calma. Muestra bien cómo es la vejez. Opción C: No estoy seguro.",
   "kb": 370
+ },
+ "8083943b": {
+  "tipo": "guia-listo",
+  "texto": "¡Muy bien! Terminó las tres actividades.",
+  "kb": 51
+ },
+ "93ab54f0": {
+  "tipo": "retroalim",
+  "texto": "Tiene varias lecturas. Fíjese en los rostros, la luz y que no hay nadie más: transmiten tristeza. Faltan compañía, alegría o actividad.",
+  "kb": 158
+ },
+ "43c2d4ee": {
+  "tipo": "retroalim",
+  "texto": "Bien observado. Palabras como «anciano» e «indefenso» lo muestran solo como víctima. No sabemos quién es, a qué se dedica ni qué opina él.",
+  "kb": 149
+ },
+ "b79c8b95": {
+  "tipo": "tema4-p3",
+  "texto": "Piense en esta pregunta. Si quiere, practique este tema. Cómo reconocer noticias falsas. Para pensar: ¿Qué hace usted cuando recibe un mensaje así?",
+  "kb": 162
+ },
+ "815ae919": {
+  "tipo": "retroalim",
+  "texto": "Es muy común no notarlo. Vemos tantos titulares así que ya no llaman la atención. «Indefenso» y «ya no puede valerse» lo muestran solo como víctima.",
+  "kb": 180
+ },
+ "9192d65f": {
+  "tipo": "retroalim",
+  "texto": "Bien observado. Estos programas suelen dibujar a las personas mayores tristes aunque nadie lo pida. Faltan compañía, alegría, trabajo o aprendizaje.",
+  "kb": 161
+ },
+ "c0382506": {
+  "tipo": "tema2-p3",
+  "texto": "Piense en esta pregunta. Si quiere, practique este tema. ¿Qué es el edadismo?. Para pensar: ¿Alguna vez sintió que le trataron distinto por su edad?",
+  "kb": 154
+ },
+ "b0cac4a8": {
+  "tipo": "retroalim",
+  "texto": "Muy bien visto. Pide urgencia, grita con MAYÚSCULAS y no dice qué médico lo afirma ni dónde se publicó. Ante una duda de salud, consulte a su médico.",
+  "kb": 165
  }
 }

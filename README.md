@@ -127,7 +127,10 @@ Two things were changed, and they are the ceiling of what the browser alone can 
 **What actually removes the robot** is pre-rendered audio, and that part is now
 done for the texts that matter most. `audio/` holds twelve clips generated with
 Higgsfield (`text2speech_v2`, ElevenLabs engine, preset voice Marisol): the
-eight tutorial scenes, the welcome, and the three practice examples. `speak()`
+eight tutorial scenes, the welcome, the three practice examples, five of the
+nine feedback replies, two lesson steps and the completion message -- 20 of the
+38 texts, with the chat deliberately left out. The tutorial and the welcome are
+complete, so the paths a first-time user walks are fully voiced. `speak()`
 looks each text up by an FNV-1a hash of the text itself — not by its speech id,
 because the tutorial reuses the id `video` for all eight scenes — and plays the
 file when there is one, falling back to `speechSynthesis` when there is not. The
