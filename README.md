@@ -103,6 +103,61 @@ All animations are disabled under `prefers-reduced-motion` and by the `animation
 - Activity feedback, 76px.
 - Thanks screen, 190px, celebrating.
 
+## Voice: why it sounds robotic, and what fixes it
+
+The kit reads text with the browser's Web Speech API. That API does not pick a
+voice, it takes the first one matching the language, and on Windows that is
+**Microsoft Helena**: an old SAPI voice, from Spain, for an app whose users are
+Peruvian. Measured on the development machine, the only Spanish voices installed
+were Helena, Laura and Pablo, all `es-ES`, all local, all of that generation.
+The code asked for `es-PE`, which does not exist there, so it silently fell back
+to Helena.
+
+Two things were changed, and they are the ceiling of what the browser alone can do:
+
+- `pickVoice()` now chooses deliberately, scoring Latin-American locales above
+  peninsular ones and neural voices (`Natural`, `Online`, `Neural`, `Google`,
+  non-local) far above old local ones. On this machine it still lands on Helena
+  because nothing better is installed, but on a phone, or on a machine with the
+  Natural voices added, it picks the good voice by itself.
+- Long texts are split into sentences and spoken as separate utterances. The gap
+  between them is a real pause. A single long utterance delivered flat is a large
+  part of what reads as robotic, and this also makes Detener respond immediately.
+
+**What actually removes the robot**, and it is not a browser setting: pre-render
+the audio. Every text in this kit is scripted and finite — the lessons, the
+activities, the eight video scenes, the chat replies — so each one can be
+generated once with a neural voice and shipped as an audio file, with
+`speechSynthesis` kept only as the fallback. On Higgsfield the model for this is
+`text2speech_v2` with `variant: elevenlabs`, or `qwen_audio_tts`, whose
+`instruction` field takes a plain-language direction such as a Peruvian accent and
+a warm, unhurried delivery. Both are marked `unlim`. Budget roughly one short clip
+per text.
+
+## Welcome image: the brief
+
+The kit argues that media show old age as sadness, dependency and isolation, and
+activity 3 hands the learner exactly that picture to criticise. The welcome screen
+should therefore be its deliberate opposite, **made with the same technology**:
+Peruvian older adults, warm daylight, saturated colour, doing something with
+agency — one showing another something on a phone, both amused. Same medium as
+activity 3, opposite message. It also sets up a closing reveal: that image was AI
+too, and the tool that produced the stereotype can produce this instead.
+
+Suggested model: `soul_2` (Higgsfield Soul 2.0), 3:2, which is `unlim`.
+
+> Fotografía documental cálida de dos personas mayores peruanas sentadas en una
+> banca, en la puerta de una casa de barrio en Lima, a media tarde. Una le muestra
+> algo en el celular a la otra y las dos se ríen con ganas. Luz natural dorada,
+> colores saturados, ropa cotidiana de diario, una lleva chompa tejida. Rostros
+> despiertos, con arrugas visibles y dignidad, mirándose entre ellas. Nitidez
+> real, grano suave de fotografía documental, nada de estudio ni de banco de
+> imágenes. Sin texto en la imagen.
+
+On wide screens it belongs beside the hero, not above it: the welcome column is
+already exactly full at 1536x722, and the empty horizontal space is where it fits
+without bringing the scroll back.
+
 ## Screens
 1. **Bienvenida** `/`: Lupita with a "Hola, soy Lupita" tag. H1 with the kit name, a one-line tagline, the "Empezar" button (opens the video) with the note "Primero verá un video corto de 1 minuto.", and an "Escuchar" button. Decorative teal and peach circles in the corners.
 2. **¿Cómo se usa?** (video): 8 scenes (text and visuals in `SCENES` and the `vs1`–`vs8` blocks), 8 progress bars, "Parte N de 8", and a large navy caption bar (24–30px, white). Lupita poses per scene; the buttons being explained are highlighted with a 6px `#E69277` outline. Controls: Pausar / Seguir viendo, Ver desde el principio, Saltar video. The final button is "Ir al menú". Opened from the Welcome screen and from the Menu.

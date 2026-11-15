@@ -634,6 +634,34 @@ function star(x, y, s, delay, fill, still) {
   return h('path', { d: `M${x} ${y - s} Q${x} ${y} ${x + s} ${y} Q${x} ${y} ${x} ${y + s} Q${x} ${y} ${x - s} ${y} Q${x} ${y} ${x} ${y - s}Z`, fill, stroke: '#07336D', strokeWidth: 2.5, strokeLinejoin: 'round',
     style: { transformBox: 'fill-box', transformOrigin: 'center', animation: still ? undefined : `lpTwinkle 1.1s ease-in-out ${delay}s infinite` } });
 }
+// La Web Speech API no elige voz: toma la primera que coincida con el idioma.
+// En Windows eso es Microsoft Helena (España), una voz SAPI vieja que suena a
+// robot, y encima con acento que no es el del usuario. Aqui se elige a
+// proposito. El orden importa mas que el detalle: acento latinoamericano antes
+// que peninsular, y voz neuronal antes que local. En un equipo con voces
+// neuronales instaladas, o en un celular Android, esto solo ya cambia todo.
+function pickVoice() {
+  const ss = window.speechSynthesis;
+  if (!ss) return null;
+  const voices = ss.getVoices();
+  if (!voices.length) return null;
+  const score = v => {
+    const lang = (v.lang || '').toLowerCase().replace('_', '-');
+    const name = (v.name || '').toLowerCase();
+    if (!/^es/.test(lang)) return -1;
+    let s = lang === 'es-pe' ? 60 : /^es-(419|mx|us|co|cl|ar|bo|ec|py|uy|ve)/.test(lang) ? 45 : lang === 'es-es' ? 10 : 25;
+    if (/natural|neural|online|premium|enhanced|wavenet/.test(name)) s += 50;
+    if (/google|siri/.test(name)) s += 30;
+    if (!v.localService) s += 15;
+    return s;
+  };
+  const best = voices.filter(v => score(v) >= 0).sort((a, b) => score(b) - score(a))[0];
+  return best || null;
+}
+// getVoices() se llena de forma asincrona: sin esta llamada temprana, el primer
+// toque en Escuchar puede quedarse sin voz asignada.
+if (window.speechSynthesis) { try { speechSynthesis.getVoices(); } catch (e) {} }
+
 function mascot(o) {
   const { arm = 'idle', mouth = 'smile', jump = false, sparkles = false, size = 120, still = false, shadow = true, label } = o || {};
   const N = '#07336D', P = '#E69277', C = '#FFF6E3', W = '#FFFFFF';
@@ -797,13 +825,29 @@ class Component extends DCLogic {
     if (!ss) { if (!onEnd) this.setState({ notice: 'La lectura en voz alta no está disponible en este navegador.' }); return false; }
     if (!onEnd && this.state.speaking === id) { ss.cancel(); this.setState({ speaking: null }); return true; }
     ss.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = 'es-PE'; u.rate = 0.9;
-    const v = ss.getVoices().find(v => /^es/i.test(v.lang));
-    if (v) u.voice = v;
-    u.onend = u.onerror = () => { if (this.state.speaking === id) this.setState({ speaking: null }); onEnd && onEnd(); };
+    const voice = pickVoice();
+    // Una sola emision larga sale de corrido, sin respirar: es buena parte de
+    // lo que se oye como robotico. Cortando por frases, el salto entre
+    // emisiones deja una pausa natural, y ademas el boton Detener responde
+    // antes porque no hay que esperar a que termine todo el texto.
+    const parts = String(text).match(/[^.!?…]+[.!?…]*/g) || [text];
+    let left = parts.length;
+    const done = () => {
+      if (--left > 0) return;
+      if (this.state.speaking === id) this.setState({ speaking: null });
+      onEnd && onEnd();
+    };
+    parts.forEach(part => {
+      const frase = part.trim();
+      if (!frase) { left--; return; }
+      const u = new SpeechSynthesisUtterance(frase);
+      if (voice) { u.voice = voice; u.lang = voice.lang; } else { u.lang = 'es-PE'; }
+      u.rate = 0.9;
+      u.onend = u.onerror = done;
+      ss.speak(u);
+    });
+    if (left <= 0) { onEnd && onEnd(); return true; }
     this.setState({ speaking: id });
-    ss.speak(u);
     return true;
   }
   listen(id, text) {
