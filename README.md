@@ -124,8 +124,17 @@ Two things were changed, and they are the ceiling of what the browser alone can 
   between them is a real pause. A single long utterance delivered flat is a large
   part of what reads as robotic, and this also makes Detener respond immediately.
 
-**What actually removes the robot**, and it is not a browser setting: pre-render
-the audio. Every text in this kit is scripted and finite — the lessons, the
+**What actually removes the robot** is pre-rendered audio, and that part is now
+done for the texts that matter most. `audio/` holds twelve clips generated with
+Higgsfield (`text2speech_v2`, ElevenLabs engine, preset voice Marisol): the
+eight tutorial scenes, the welcome, and the three practice examples. `speak()`
+looks each text up by an FNV-1a hash of the text itself — not by its speech id,
+because the tutorial reuses the id `video` for all eight scenes — and plays the
+file when there is one, falling back to `speechSynthesis` when there is not. The
+remaining texts (lessons, feedback, chat) still synthesise, and recording them is
+just a matter of running the same generator again.
+
+The original reasoning, for whoever continues: Every text in this kit is scripted and finite — the lessons, the
 activities, the eight video scenes, the chat replies — so each one can be
 generated once with a neural voice and shipped as an audio file, with
 `speechSynthesis` kept only as the fallback. On Higgsfield the model for this is

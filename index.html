@@ -640,6 +640,25 @@ function star(x, y, s, delay, fill, still) {
 // proposito. El orden importa mas que el detalle: acento latinoamericano antes
 // que peninsular, y voz neuronal antes que local. En un equipo con voces
 // neuronales instaladas, o en un celular Android, esto solo ya cambia todo.
+// Audio pregrabado. La clave es un hash del texto y no un id, porque el video
+// usa el mismo id 'video' para sus ocho escenas. Si el texto tiene clip, suena
+// una voz humana; si no, se cae al sintetizador del navegador. Asi se puede ir
+// grabando el kit por partes sin romper nada.
+var AUDIO_CLIPS = {};
+if (typeof fetch === 'function') {
+  fetch('./audio/manifest.json').then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (m) { if (m) AUDIO_CLIPS = m; }).catch(function () {});
+}
+function fnv1a(s) {
+  var h = 0x811c9dc5;
+  for (var i = 0; i < s.length; i++) {
+    var c = s.charCodeAt(i);
+    h ^= c < 256 ? (c & 0xFF) : ((c >> 8) ^ (c & 0xFF));
+    h = Math.imul(h, 0x01000193) >>> 0;
+  }
+  return ('0000000' + h.toString(16)).slice(-8);
+}
+
 function pickVoice() {
   const ss = window.speechSynthesis;
   if (!ss) return null;
@@ -819,11 +838,35 @@ class Component extends DCLogic {
   };
   startPractice(from, act) { this.go('practice', { from, act, answers: {}, done: false }); }
 
-  stopSpeak() { if (window.speechSynthesis) window.speechSynthesis.cancel(); if (this.state.speaking) this.setState({ speaking: null }); }
+  stopSpeak() {
+    if (this.clip) { try { this.clip.onended = this.clip.onerror = null; this.clip.pause(); } catch (e) {} this.clip = null; }
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+    if (this.state.speaking) this.setState({ speaking: null });
+  }
   speak(id, text, onEnd) {
+    if (!onEnd && this.state.speaking === id) { this.stopSpeak(); return true; }
+    this.stopSpeak();
+    const clave = fnv1a(String(text));
+    if (AUDIO_CLIPS[clave]) {
+      const a = new Audio('./audio/' + clave + '.mp3');
+      this.clip = a;
+      const fin = conFallo => {
+        if (this.clip === a) this.clip = null;
+        if (conFallo) return this.sintetizar(id, text, onEnd);
+        if (this.state.speaking === id) this.setState({ speaking: null });
+        onEnd && onEnd();
+      };
+      a.onended = () => fin(false);
+      a.onerror = () => fin(true);
+      this.setState({ speaking: id });
+      a.play().catch(() => fin(true));
+      return true;
+    }
+    return this.sintetizar(id, text, onEnd);
+  }
+  sintetizar(id, text, onEnd) {
     const ss = window.speechSynthesis;
     if (!ss) { if (!onEnd) this.setState({ notice: 'La lectura en voz alta no está disponible en este navegador.' }); return false; }
-    if (!onEnd && this.state.speaking === id) { ss.cancel(); this.setState({ speaking: null }); return true; }
     ss.cancel();
     const voice = pickVoice();
     // Una sola emision larga sale de corrido, sin respirar: es buena parte de

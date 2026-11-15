@@ -1,0 +1,62 @@
+{
+ "27428309": {
+  "tipo": "escena",
+  "texto": "Hola, soy Lupita. Le acompaño a mirar con lupa lo que ve en la televisión y en el celular.",
+  "kb": 85
+ },
+ "caba0286": {
+  "tipo": "escena",
+  "texto": "Este kit le ayuda a reconocer noticias falsas y a notar cuándo los medios muestran mal a las personas mayores.",
+  "kb": 109
+ },
+ "2362af4a": {
+  "tipo": "escena",
+  "texto": "Arriba siempre está el botón «Volver». Tóquelo para regresar a la pantalla anterior.",
+  "kb": 82
+ },
+ "fa0e6bb7": {
+  "tipo": "escena",
+  "texto": "Si prefiere oír en vez de leer, toque «Escuchar» y yo le leo el texto.",
+  "kb": 77
+ },
+ "cdc88667": {
+  "tipo": "escena",
+  "texto": "En «Conversar» puede preguntarme por un mensaje que le llegó. Toque una pregunta o escríbala.",
+  "kb": 90
+ },
+ "644682df": {
+  "tipo": "escena",
+  "texto": "En «Aprender» hay cinco temas. Cada uno tiene tres pasos cortos. Toque «Siguiente» para avanzar.",
+  "kb": 100
+ },
+ "7c362158": {
+  "tipo": "escena",
+  "texto": "En «Practicar» verá ejemplos inventados. No hay respuestas malas: después de elegir, le explico.",
+  "kb": 107
+ },
+ "783c18e7": {
+  "tipo": "escena",
+  "texto": "Eso es todo. Puede ver este video otra vez desde el menú. ¡Empecemos!",
+  "kb": 80
+ },
+ "f62cb4c8": {
+  "tipo": "bienvenida",
+  "texto": "Hola, soy Lupita. Kit de Alfabetización Mediática para Adultos Mayores. Le ayudo a mirar con lupa lo que ve en la televisión y en el celular. Toque Empezar.",
+  "kb": 147
+ },
+ "359fae38": {
+  "tipo": "actividad",
+  "texto": "Titular inventado: Rescatan a anciano indefenso que vivía solo. Ya no puede valerse por sí mismo, dicen vecinos. ¿Qué estereotipo ve en este titular? Opción A: Lo muestra como una víctima que no puede valerse por sí misma. Opción B: Lo muestra como una persona con experiencia. Opción C: No veo ningún estereotipo.",
+  "kb": 341
+ },
+ "dee77dc9": {
+  "tipo": "actividad",
+  "texto": "Mensaje inventado: Urgente. Un médico japonés descubrió que tomar agua con limón y ajo en ayunas cura la presión alta en 7 días. Los laboratorios no quieren que usted lo sepa. Compártalo con 10 contactos antes de que lo borren. ¿Este mensaje es confiable? Opción A: Confiable. Opción B: No confiable. Opción C: No estoy seguro.",
+  "kb": 381
+ },
+ "9783c9a1": {
+  "tipo": "actividad",
+  "texto": "Imagen hecha con inteligencia artificial: una pareja de personas mayores, sentadas en silencio en un cuarto oscuro. Miran por la ventana, tristes. ¿Qué transmite esta imagen y qué le falta? Opción A: Tristeza y soledad. Le falta mostrar otras formas de vivir la vejez. Opción B: Calma. Muestra bien cómo es la vejez. Opción C: No estoy seguro.",
+  "kb": 370
+ }
+}
