@@ -8,9 +8,6 @@
 > - **Catálogo de Lupita:** [`lupita-catalogo.html`](./lupita-catalogo.html)
 > - **Especificación de diseño:** el resto de este documento.
 >
-> **Pendiente:** `assets/ia-mayores.png` (actividad 3) está en baja resolución.
-> Reemplácelo por una versión de ~1280×720 px manteniendo el mismo nombre.
-
 ---
 
 ## Handoff: especificación de diseño
