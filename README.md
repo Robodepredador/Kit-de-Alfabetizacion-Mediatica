@@ -46,6 +46,15 @@ puts the example on the left and the question with its options on the right,
 and the survey puts its three questions side by side. Nothing shrinks except
 headings and the decorative mascot -- see below.
 
+One exception, on Practicar only: when the viewport is wide but shorter than
+820px, the guide bubble is hidden there. Activity 3 carries a photo that has to
+be large enough to examine, which puts the screen at about 808px, and the bubble
+is the 165px that do not fit. Its text is a fixed hint, identical across the
+three activities. **This also removes its Escuchar button**, the only listen
+control on the activity before answering -- if the kit is rebuilt, give the
+question its own Escuchar instead. On a viewport taller than 820px, and on
+mobile, the bubble stays.
+
 **Wide screens (>=820px)**
 The mobile scale leaves the hero off-screen on a laptop: at 1536x864 the welcome
 screen measured 881px. On wide viewports only the headings and the decorative

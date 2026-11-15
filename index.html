@@ -92,6 +92,14 @@ button,input,textarea{font-family:inherit}
   main[data-screen-label^="08"] textarea{height:84px !important;min-height:0 !important}
   main[data-screen-label^="08"] fieldset button{min-height:104px !important}
 }
+/* Practicar en pantalla baja. La actividad 3 lleva una foto que hay que poder
+   mirar: con ella el contenido no baja de ~808px, y la burbuja de guia ocupa
+   los 165px que faltan. Su texto es una pista fija, igual en las 3 actividades,
+   asi que ahi se oculta. Solo cuando el alto no da: en una pantalla de mas de
+   820px se mantiene. Ojo: con ella se va su boton Escuchar. */
+@media (min-width:1000px) and (max-height:820px){
+  [data-guide]:has(~ main[data-screen-label^="07"]){display:none}
+}
 </style>
 </helmet>
 <div lang="es" style="min-height:100vh;background:#FFF6E3;color:#1E1816;font-family:'Atkinson Hyperlegible',system-ui,sans-serif;font-size:24px;line-height:1.5;zoom:{{ zoom }}">
