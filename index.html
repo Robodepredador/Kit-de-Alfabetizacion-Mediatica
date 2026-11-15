@@ -45,6 +45,53 @@ button,input,textarea{font-family:inherit}
   svg[viewBox="0 0 220 242"]{max-width:132px;max-height:145px}
   [data-stage]{min-height:min(360px,30vh) !important}
 }
+/* Pantallas de opciones en laptop. El kit es de columna unica pensada para
+   celular; en una laptop eso deja ~700px vacios a los lados y empuja las
+   opciones fuera de pantalla. A partir de 1000px se usa ese ancho para que
+   cada pantalla de eleccion entre de una sola vista, sin tocar el tamano
+   del texto ni de los botones. */
+@media (min-width:1000px){
+  [data-guide],
+  main[data-screen-label^="03"],
+  main[data-screen-label^="04"],
+  main[data-screen-label^="07"],
+  main[data-screen-label^="08"]{max-width:1120px !important}
+  main[data-screen-label]{padding-bottom:24px !important}
+
+  /* Burbuja de Lupita en una sola fila en vez de apilada */
+  [data-guide] > div > div:last-child{flex-flow:row wrap !important;align-items:center;gap:8px 18px !important;margin-bottom:12px !important}
+  [data-guide] > div > div:last-child > span:nth-of-type(2){flex-basis:100%}
+  [data-guide] > div > div:last-child > p{flex:1 1 320px}
+  [data-guide] > div > div:last-child > button{align-self:center !important}
+  [data-guide]{padding-top:14px !important}
+
+  /* Menu y Aprender: tarjetas en dos columnas */
+  main[data-screen-label^="03"],
+  main[data-screen-label^="04"]{display:grid !important;grid-template-columns:1fr 1fr;align-content:start;column-gap:18px}
+  main[data-screen-label^="03"] > h1,
+  main[data-screen-label^="04"] > h1,
+  main[data-screen-label^="03"] > button:last-of-type{grid-column:1/-1}
+
+  /* Practicar: el ejemplo a la izquierda, pregunta y opciones a la derecha,
+     para poder compararlos sin desplazar la pantalla */
+  main[data-screen-label^="07"]{display:grid !important;grid-template-columns:1fr 1fr;align-content:start;column-gap:24px;gap:16px !important}
+  main[data-screen-label^="07"] > *{grid-column:1/-1}
+  main[data-screen-label^="07"] > [data-act-head]{grid-area:1/1}
+  main[data-screen-label^="07"] > h1{grid-area:2/1}
+  main[data-screen-label^="07"] > [data-chip]{grid-area:3/1}
+  main[data-screen-label^="07"] > figure{grid-area:4/1;align-self:start}
+  main[data-screen-label^="07"] > h2{grid-area:1/2}
+  main[data-screen-label^="07"] > div[role="group"]{grid-row:2/5;grid-column:2;align-self:start}
+  [data-act-img]{height:min(280px,30vh) !important}
+
+  /* Encuesta: las tres preguntas lado a lado */
+  main[data-screen-label^="08"]{display:grid !important;grid-template-columns:repeat(3,1fr);align-content:start;column-gap:18px}
+  main[data-screen-label^="08"] > h1{grid-column:1/-1}
+  main[data-screen-label^="08"] > div{grid-column:1/3}
+  main[data-screen-label^="08"] > button{grid-column:3;align-self:start}
+  main[data-screen-label^="08"] textarea{height:84px !important;min-height:0 !important}
+  main[data-screen-label^="08"] fieldset button{min-height:104px !important}
+}
 </style>
 </helmet>
 <div lang="es" style="min-height:100vh;background:#FFF6E3;color:#1E1816;font-family:'Atkinson Hyperlegible',system-ui,sans-serif;font-size:24px;line-height:1.5;zoom:{{ zoom }}">
@@ -65,7 +112,7 @@ button,input,textarea{font-family:inherit}
 </sc-if>
 
 <sc-if value="{{ showGuide }}" hint-placeholder-val="{{ false }}">
-<div style="max-width:800px;margin:0 auto;padding:24px 20px 0">
+<div data-guide style="max-width:800px;margin:0 auto;padding:24px 20px 0">
   <div style="display:flex;align-items:flex-end;gap:14px">
     <div style="width:110px;flex-shrink:0;display:flex;justify-content:center">{{ guideMascot }}</div>
     <div style="position:relative;flex:1;min-width:0;background:#FFFFFF;border:3px solid #07336D;border-radius:10px;padding:16px 18px;display:flex;flex-direction:column;gap:12px;margin-bottom:20px">
@@ -405,7 +452,7 @@ button,input,textarea{font-family:inherit}
 <sc-if value="{{ isPractice }}" hint-placeholder-val="{{ false }}">
 <main data-screen-label="07 Practicar" style="max-width:800px;margin:0 auto;padding:8px 20px 64px;display:flex;flex-direction:column;gap:20px">
   <sc-if value="{{ inActivity }}" hint-placeholder-val="{{ true }}">
-    <div style="display:flex;flex-direction:column;gap:8px">
+    <div data-act-head style="display:flex;flex-direction:column;gap:8px">
       <span style="font-size:22px;font-weight:700;color:#07336D">Actividad {{ actNum }} de 3</span>
       <div aria-hidden="true" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
         <sc-for list="{{ progress }}" as="p" hint-placeholder-count="3">
@@ -414,7 +461,7 @@ button,input,textarea{font-family:inherit}
       </div>
     </div>
     <h1 style="margin:0;font-family:'Merriweather',Georgia,serif;font-weight:900;font-size:clamp(30px,5vw,40px);line-height:1.2;color:#07336D;text-wrap:balance">{{ A.title }}</h1>
-    <span style="align-self:flex-start;display:flex;align-items:center;gap:10px;padding:8px 16px;border-radius:8px;background:#F9E1D8;color:#1E1816;font-size:20px;font-weight:700">
+    <span data-chip style="align-self:flex-start;display:flex;align-items:center;gap:10px;padding:8px 16px;border-radius:8px;background:#F9E1D8;color:#1E1816;font-size:20px;font-weight:700">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#07336D" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 1 0 0-20z M12 16v-4 M12 8h.01"></path></svg>
       <span>Ejemplo inventado para practicar</span>
     </span>
@@ -436,7 +483,7 @@ button,input,textarea{font-family:inherit}
     </sc-if>
     <sc-if value="{{ isAct2 }}" hint-placeholder-val="{{ false }}">
       <figure style="margin:0;background:#FFFFFF;border-radius:10px;border:3px solid #EADCC0;padding:14px;display:flex;flex-direction:column;gap:12px">
-        <div style="position:relative;width:100%;height:280px">
+        <div data-act-img style="position:relative;width:100%;height:280px">
           <img src="./assets/ia-mayores.jpg" alt="Imagen creada con inteligencia artificial. La descripción completa está debajo." style="width:100%;height:100%;object-fit:cover;border-radius:8px;display:block">
         </div>
         <figcaption style="font-size:22px;line-height:1.5;color:#1E1816;padding:0 6px 6px"><strong>Lo que muestra:</strong> una pareja de personas mayores, sentadas en silencio en un cuarto oscuro. Miran por la ventana, tristes.</figcaption>

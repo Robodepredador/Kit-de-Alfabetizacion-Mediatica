@@ -37,6 +37,15 @@ Web prototype (mobile first, also desktop) of an educational assistant that help
 - Titles: Merriweather 900. H1 `clamp(30–32px, 5–6vw, 40–50px)`, line-height 1.2.
 - Body: Atkinson Hyperlegible 400/700. Base 24px, line-height 1.5. Lesson text 26px. Buttons 24–28px, weight 700. Small labels 18–22px (minimum 18px).
 
+**Wide screens: two layouts, one design**
+Below 1000px the kit is the single mobile column described here. At 1000px and
+above the option screens are re-laid-out to use the horizontal space, so each
+one fits a laptop screen without scrolling: the guide bubble becomes one row
+instead of a stack, Menu and Aprender put their cards in two columns, Practicar
+puts the example on the left and the question with its options on the right,
+and the survey puts its three questions side by side. Nothing shrinks except
+headings and the decorative mascot -- see below.
+
 **Wide screens (>=820px)**
 The mobile scale leaves the hero off-screen on a laptop: at 1536x864 the welcome
 screen measured 881px. On wide viewports only the headings and the decorative
