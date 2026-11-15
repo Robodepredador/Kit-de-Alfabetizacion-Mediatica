@@ -893,14 +893,14 @@ const FACES = [
 ];
 
 const SCENES = [
-  { ms: 6000, arm: 'wave', text: n => `Hola, soy ${n}. Le acompaño a mirar con lupa lo que ve en la televisión y en el celular.` },
-  { ms: 8000, arm: 'idle', text: () => 'Este kit le ayuda a reconocer noticias falsas y a notar cuándo los medios muestran mal a las personas mayores.' },
-  { ms: 7000, arm: 'point', text: () => 'Arriba siempre está el botón «Volver». Tóquelo para regresar a la pantalla anterior.' },
-  { ms: 7000, arm: 'point', text: () => 'Si prefiere oír en vez de leer, toque «Escuchar» y yo le leo el texto.' },
-  { ms: 8000, arm: 'point', text: () => 'En «Conversar» puede preguntarme por un mensaje que le llegó. Toque una pregunta o escríbala.' },
-  { ms: 8000, arm: 'point', text: () => 'En «Aprender» hay cinco temas. Cada uno tiene tres pasos cortos. Toque «Siguiente» para avanzar.' },
-  { ms: 8000, arm: 'point', text: () => 'En «Practicar» verá ejemplos inventados. No hay respuestas malas: después de elegir, le explico.' },
-  { ms: 8000, arm: 'up', celebrate: true, text: () => 'Eso es todo. Puede ver este video otra vez desde el menú. ¡Empecemos!' }
+  { ms: 6000, start: 0.00, talkEnd: 5.36, end: 5.71, arm: 'wave', text: n => `Hola, soy ${n}. Le acompaño a mirar con lupa lo que ve en la televisión y en el celular.` },
+  { ms: 8000, start: 5.71, talkEnd: 12.59, end: 12.94, arm: 'idle', text: () => 'Este kit le ayuda a reconocer noticias falsas y a notar cuándo los medios muestran mal a las personas mayores.' },
+  { ms: 7000, start: 12.94, talkEnd: 18.14, end: 18.49, arm: 'point', text: () => 'Arriba siempre está el botón «Volver». Tóquelo para regresar a la pantalla anterior.' },
+  { ms: 7000, start: 18.49, talkEnd: 23.37, end: 23.72, arm: 'point', text: () => 'Si prefiere oír en vez de leer, toque «Escuchar» y yo le leo el texto.' },
+  { ms: 8000, start: 23.72, talkEnd: 29.40, end: 29.75, arm: 'point', text: () => 'En «Conversar» puede preguntarme por un mensaje que le llegó. Toque una pregunta o escríbala.' },
+  { ms: 8000, start: 29.75, talkEnd: 36.07, end: 36.42, arm: 'point', text: () => 'En «Aprender» hay cinco temas. Cada uno tiene tres pasos cortos. Toque «Siguiente» para avanzar.' },
+  { ms: 8000, start: 36.42, talkEnd: 43.22, end: 43.57, arm: 'point', text: () => 'En «Practicar» verá ejemplos inventados. No hay respuestas malas: después de elegir, le explico.' },
+  { ms: 8000, start: 43.57, talkEnd: 48.61, end: 49.00, arm: 'up', celebrate: true, text: () => 'Eso es todo. Puede ver este video otra vez desde el menú. ¡Empecemos!' }
 ];
 
 const SCREENS = { 'Bienvenida': 'welcome', 'Video': 'video', 'Menú': 'menu', 'Aprender': 'learn', 'Tema': 'lesson', 'Conversar': 'chat', 'Practicar': 'practice', 'Encuesta': 'survey', 'Gracias': 'thanks' };
@@ -911,6 +911,7 @@ class Component extends DCLogic {
   componentDidMount() {
     document.documentElement.lang = 'es';
     this.armarDesbloqueoAudio();
+    this.getVideoEl();
     this.saludar();
   }
 
@@ -923,6 +924,17 @@ class Component extends DCLogic {
       this.audioEl = a;
     }
     return this.audioEl;
+  }
+
+  getVideoEl() {
+    if (!this.videoEl) {
+      const v = new Audio('./audio/video_tutorial.mp3');
+      v.preload = 'auto';
+      v.playsInline = true;
+      v.setAttribute('playsinline', '');
+      this.videoEl = v;
+    }
+    return this.videoEl;
   }
 
   getAudioCtx() {
@@ -945,57 +957,27 @@ class Component extends DCLogic {
         try { navigator.audioSession.type = 'playback'; } catch (e) {}
       }
       const ctx = this.getAudioCtx();
-      if (ctx && !this.ctxPrimed) {
+      if (ctx && ctx.state !== 'running') {
         try {
+          ctx.resume();
           const buf = ctx.createBuffer(1, 1, 22050);
           const src = ctx.createBufferSource();
           src.buffer = buf;
           src.connect(ctx.destination);
           src.start(0);
-          this.ctxPrimed = true;
         } catch (e) {}
       }
     };
-    document.addEventListener('pointerdown', desbloquear, { passive: true });
-    document.addEventListener('touchstart', desbloquear, { passive: true });
-    document.addEventListener('touchend', desbloquear, { passive: true });
-    document.addEventListener('click', desbloquear, { passive: true });
-    document.addEventListener('keydown', desbloquear, { passive: true });
+    window.addEventListener('touchend', desbloquear, true);
+    window.addEventListener('click', desbloquear, true);
+    window.addEventListener('keydown', desbloquear, true);
   }
 
-  obtenerClipBuffer(clave) {
-    this.audioBuffers = this.audioBuffers || {};
-    this.blobUrls = this.blobUrls || {};
-    this.fetchPromises = this.fetchPromises || {};
-    if (this.audioBuffers[clave]) return Promise.resolve(this.audioBuffers[clave]);
-    if (!this.fetchPromises[clave]) {
-      this.fetchPromises[clave] = fetch('./audio/' + clave + '.mp3')
-        .then(r => r.ok ? r.arrayBuffer() : Promise.reject())
-        .then(buf => {
-          this.audioBuffers[clave] = buf;
-          try {
-            this.blobUrls[clave] = URL.createObjectURL(new Blob([buf], { type: 'audio/mpeg' }));
-          } catch (e) {}
-          return buf;
-        })
-        .catch(err => {
-          delete this.fetchPromises[clave];
-          throw err;
-        });
-    }
-    return this.fetchPromises[clave];
-  }
-
-  // Los ocho clips del tutorial se descargan en memoria de forma secuencial
-  // sin crear múltiples elementos <audio> que bloquean el decodificador en celulares.
   precargarVideo() {
-    if (this.precargados) return;
-    this.precargados = true;
-    const claves = SCENES.map(sc => fnv1a(sc.text(this.name()))).filter(h => AUDIO_CLIPS[h]);
-    let p = Promise.resolve();
-    claves.forEach(h => {
-      p = p.then(() => this.obtenerClipBuffer(h).catch(() => {}));
-    });
+    const v = this.getVideoEl();
+    if (v.readyState === 0) {
+      try { v.load(); } catch (e) {}
+    }
   }
 
   saludar() {
@@ -1020,7 +1002,7 @@ class Component extends DCLogic {
     document.addEventListener('pointerdown', alPrimerToque);
     document.addEventListener('keydown', alPrimerToque);
   }
-  componentWillUnmount() { this.stopSpeak(); clearTimeout(this.vt); clearTimeout(this.vSafe); }
+  componentWillUnmount() { this.stopVideo(); this.stopSpeak(); }
 
   name() { return (this.props.assistantName || 'Lupita').trim() || 'Lupita'; }
   screen() { return this.state.screen || SCREENS[this.props.startScreen] || 'welcome'; }
@@ -1087,56 +1069,12 @@ class Component extends DCLogic {
   stopSpeak() {
     this.speakToken = (this.speakToken || 0) + 1;
     clearTimeout(this.audioWatchdog);
-    if (this.webSource) {
-      try { this.webSource.onended = null; this.webSource.stop(0); } catch (e) {}
-      this.webSource = null;
-    }
     if (this.clip) {
       try { this.clip.onended = this.clip.onerror = this.clip.onplaying = null; this.clip.pause(); } catch (e) {}
       this.clip = null;
     }
     if (window.speechSynthesis) window.speechSynthesis.cancel();
     if (this.state.speaking) this.setState({ speaking: null });
-  }
-
-  reproducirWebAudio(clave, token, fin, alFallar) {
-    const ctx = this.getAudioCtx();
-    if (!ctx) return alFallar ? alFallar() : fin(true);
-    this.decodedBuffers = this.decodedBuffers || {};
-    const tocarBuffer = audioBuf => {
-      if (this.speakToken !== token) return;
-      try {
-        if (ctx.state === 'suspended') { try { ctx.resume(); } catch (e) {} }
-        const src = ctx.createBufferSource();
-        src.buffer = audioBuf;
-        src.connect(ctx.destination);
-        this.webSource = src;
-        src.onended = () => {
-          if (this.speakToken !== token) return;
-          this.webSource = null;
-          fin(false);
-        };
-        src.start(0);
-      } catch (e) {
-        if (alFallar) alFallar(); else fin(true);
-      }
-    };
-    if (this.decodedBuffers[clave]) {
-      return tocarBuffer(this.decodedBuffers[clave]);
-    }
-    this.obtenerClipBuffer(clave)
-      .then(buf => {
-        if (this.speakToken !== token) return;
-        ctx.decodeAudioData(
-          buf.slice(0),
-          audioBuf => {
-            this.decodedBuffers[clave] = audioBuf;
-            tocarBuffer(audioBuf);
-          },
-          () => { if (this.speakToken === token) { if (alFallar) alFallar(); else fin(true); } }
-        );
-      })
-      .catch(() => { if (this.speakToken === token) { if (alFallar) alFallar(); else fin(true); } });
   }
 
   speak(id, text, onEnd, sinRespaldo) {
@@ -1146,64 +1084,36 @@ class Component extends DCLogic {
     const clave = fnv1a(String(text));
     if (AUDIO_CLIPS[clave]) {
       let finalizado = false;
+      const a = this.getAudioEl();
+      this.clip = a;
       const fin = conFallo => {
         if (finalizado || this.speakToken !== token) return;
         finalizado = true;
-        clearTimeout(this.audioWatchdog);
-        this.clip = null;
+        if (this.clip === a) this.clip = null;
         if (conFallo) {
           if (sinRespaldo) { if (this.state.speaking === id) this.setState({ speaking: null }); return; }
-          if (this.state.speaking === id) this.setState({ speaking: null });
-          if (onEnd) { onEnd(); return; }
           return this.sintetizar(id, text, onEnd);
         }
         if (this.state.speaking === id) this.setState({ speaking: null });
         onEnd && onEnd();
       };
-      const reproducirTag = () => {
-        if (finalizado || this.speakToken !== token) return;
-        const a = this.getAudioEl();
-        this.clip = a;
-        let haEmpezado = false;
-        a.onplaying = () => {
-          if (this.speakToken !== token) return;
-          haEmpezado = true;
-          clearTimeout(this.audioWatchdog);
-        };
-        a.onended = () => fin(false);
-        a.onerror = () => fin(true);
-        a.src = (this.blobUrls && this.blobUrls[clave]) || ('./audio/' + clave + '.mp3');
-        if (!sinRespaldo) {
-          this.audioWatchdog = setTimeout(() => {
-            if (this.speakToken === token && !haEmpezado) {
-              try { a.onended = a.onerror = a.onplaying = null; a.pause(); } catch (e) {}
-              this.reproducirWebAudio(clave, token, fin);
-            }
-          }, 1500);
-        }
-        try {
-          const prom = a.play();
-          if (prom && typeof prom.catch === 'function') {
-            prom.catch(() => {
-              if (sinRespaldo) return fin(true);
-              clearTimeout(this.audioWatchdog);
-              this.reproducirWebAudio(clave, token, fin);
-            });
-          }
-        } catch (e) {
-          if (sinRespaldo) return fin(true);
-          clearTimeout(this.audioWatchdog);
-          this.reproducirWebAudio(clave, token, fin);
-        }
+      a.onended = () => fin(false);
+      a.onerror = () => {
+        if (a.dataset.reintentado) return fin(true);
+        a.dataset.reintentado = '1';
+        a.load();
+        a.play().catch(() => fin(true));
       };
+      delete a.dataset.reintentado;
+      a.src = './audio/' + clave + '.mp3';
       this.setState({ speaking: id });
-      // En celulares, tras ~15-20s sin tocar la pantalla (paso 4 del video), el navegador
-      // bloquea HTMLAudioElement.play() dentro de setTimeout, pero un AudioContext ya
-      // activado por el primer toque nunca caduca ni congela la escena.
-      if (!sinRespaldo && this.toqueRecibido && this.getAudioCtx()) {
-        this.reproducirWebAudio(clave, token, fin, reproducirTag);
-      } else {
-        reproducirTag();
+      try {
+        const prom = a.play();
+        if (prom && typeof prom.catch === 'function') {
+          prom.catch(() => fin(true));
+        }
+      } catch (e) {
+        fin(true);
       }
       return true;
     }
@@ -1266,9 +1176,44 @@ class Component extends DCLogic {
     };
   }
 
-  // Video tutorial
-  playScene(i) {
+  // Video tutorial: usa un único archivo de audio continuo (video_tutorial.mp3)
+  // para que en celulares el navegador nunca corte ni congele el audio en el paso 4+.
+  playScene(i, reiniciarTiempo) {
     clearTimeout(this.vt); clearTimeout(this.vSafe);
+    this.stopSpeak();
+    if (this.props.videoVoice !== false && this.name() === 'Lupita') {
+      const v = this.getVideoEl();
+      const targetStart = SCENES[i] ? SCENES[i].start : 0;
+      if (reiniciarTiempo || v.currentTime < targetStart - 0.25 || v.currentTime >= 48.4) {
+        try { v.currentTime = targetStart; } catch (e) {}
+      }
+      v.ontimeupdate = () => {
+        if (!this.state.vPlaying || this.screen() !== 'video') return;
+        const t = v.currentTime;
+        let idx = 0;
+        for (let k = SCENES.length - 1; k >= 0; k--) {
+          if (t >= SCENES[k].start - 0.05) { idx = k; break; }
+        }
+        const hablando = t < SCENES[idx].talkEnd ? 'video' : null;
+        if (this.state.vScene !== idx || this.state.speaking !== hablando) {
+          this.setState({ vScene: idx, speaking: hablando });
+        }
+      };
+      v.onended = () => {
+        v.ontimeupdate = v.onended = null;
+        this.setState({ vScene: SCENES.length - 1, vPlaying: false, vEnded: true, speaking: null });
+      };
+      this.setState({ vScene: i, vPlaying: true, vEnded: false, speaking: 'video' });
+      try {
+        const prom = v.play();
+        if (prom && typeof prom.catch === 'function') {
+          prom.catch(() => this.setState({ vPlaying: false, speaking: null }));
+        }
+      } catch (e) {
+        this.setState({ vPlaying: false, speaking: null });
+      }
+      return;
+    }
     const ready = { done: false };
     this.vReady = ready;
     this.setState({ vScene: i, vPlaying: true, vEnded: false });
@@ -1285,8 +1230,16 @@ class Component extends DCLogic {
     }
     this.vSafe = setTimeout(() => avanzar(200), SCENES[i].ms + 6000);
   }
-  stopVideo() { clearTimeout(this.vt); clearTimeout(this.vSafe); this.vReady = null; if (this.state.vPlaying) this.setState({ vPlaying: false }); }
-  openVideo(from) { this.go('video', { videoFrom: from, vScene: 0, vEnded: false }, () => this.playScene(0)); }
+  stopVideo() {
+    clearTimeout(this.vt); clearTimeout(this.vSafe); this.vReady = null;
+    if (this.videoEl) {
+      try { this.videoEl.ontimeupdate = this.videoEl.onended = null; this.videoEl.pause(); } catch (e) {}
+    }
+    if (this.state.vPlaying || this.state.speaking === 'video') {
+      this.setState({ vPlaying: false, speaking: this.state.speaking === 'video' ? null : this.state.speaking });
+    }
+  }
+  openVideo(from) { this.go('video', { videoFrom: from, vScene: 0, vEnded: false }, () => this.playScene(0, true)); }
 
   addMsgs(list) {
     this.stopSpeak();
@@ -1413,7 +1366,7 @@ class Component extends DCLogic {
         : st.vPlaying
           ? { label: 'Pausar', icon: IC.pause, onClick: () => { this.stopVideo(); this.stopSpeak(); } }
           : { label: st.vScene === 0 ? 'Ver el video' : 'Seguir viendo', icon: IC.play, onClick: () => this.playScene(st.vScene) },
-      vRestart: () => { this.stopSpeak(); this.playScene(0); },
+      vRestart: () => { this.stopSpeak(); this.playScene(0, true); },
       vShowSkip: !st.vEnded,
 
       menuItems: [
