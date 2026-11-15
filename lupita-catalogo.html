@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Merriweather:wght@700;900&display=swap" rel="stylesheet">
+<style>
+html,body{margin:0;padding:0;background:#FFF6E3}
+*{box-sizing:border-box}
+a{color:#07336D;text-decoration:underline}
+a:hover{color:#1E1816}
+code{font-family:ui-monospace,Menlo,monospace;font-size:.85em;background:#FFFFFF;border:1px solid #EADCC0;border-radius:4px;padding:1px 6px}
+</style>
+</helmet>
+<div lang="es" style="min-height:100vh;background:#FFF6E3;color:#1E1816;font-family:'Atkinson Hyperlegible',system-ui,sans-serif;font-size:18px;line-height:1.5">
+<div style="max-width:1200px;margin:0 auto;padding:48px 24px 80px;display:flex;flex-direction:column;gap:48px">
+
+  <header style="display:flex;flex-wrap:wrap;align-items:center;gap:28px">
+    <img src="lupita/lupita-saludo.svg" alt="Lupita saludando" style="width:150px;height:auto">
+    <div style="flex:1 1 420px;display:flex;flex-direction:column;gap:10px">
+      <span style="font-size:16px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#5A4E48">Kit de Alfabetización Mediática · Catálogo de personaje</span>
+      <h1 style="margin:0;font-family:'Merriweather',Georgia,serif;font-weight:900;font-size:48px;line-height:1.15;color:#07336D">Lupita: estados y animaciones</h1>
+      <p style="margin:0;font-size:20px;max-width:720px;text-wrap:pretty">Todas las imágenes de Lupita y las reglas para animarla. Cada estado tiene un SVG animado, un SVG estático (para movimiento reducido) y un PNG de 512 px. Los archivos están en <code>lupita/</code>.</p>
+    </div>
+  </header>
+
+  <section style="display:flex;flex-direction:column;gap:20px">
+    <h2 style="margin:0;font-family:'Merriweather',Georgia,serif;font-weight:900;font-size:30px;color:#07336D">1. Estados</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:18px">
+
+      <article style="background:#FFFFFF;border:3px solid #EADCC0;border-radius:12px;overflow:hidden;display:flex;flex-direction:column">
+        <div style="display:flex;align-items:center;justify-content:center;gap:20px;padding:28px 16px 16px;background:#FFF6E3">
+          <img src="lupita/lupita-reposo.svg" alt="Lupita en reposo, animada" style="width:150px;height:auto">
+          <img src="lupita/lupita-reposo-estatica.svg" alt="Versión estática" style="width:64px;height:auto;opacity:.9">
+        </div>
+        <div style="padding:18px 20px 22px;display:flex;flex-direction:column;gap:10px">
+          <h3 style="margin:0;font-size:24px;font-weight:700;color:#07336D">Reposo</h3>
+          <p style="margin:0"><strong>Cuándo:</strong> estado por defecto. Burbuja guía en los pasos 1 y 2 de un tema, después de responder una actividad, y en la retroalimentación.</p>
+          <p style="margin:0"><strong>Animación:</strong> flota (<code>lpFloat</code>) y parpadea (<code>lpBlink</code>).</p>
+          <p style="margin:0"><strong>Props:</strong> <code>arm="idle" mouth="smile"</code></p>
+          <p style="margin:0;font-size:15px;color:#5A4E48">lupita-reposo.svg · -estatica.svg · png/lupita-reposo.png</p>
+        </div>
+      </article>
+
+      <article style="background:#FFFFFF;border:3px solid #EADCC0;border-radius:12px;overflow:hidden;display:flex;flex-direction:column">
+        <div style="display:flex;align-items:center;justify-content:center;gap:20px;padding:28px 16px 16px;background:#FFF6E3">
+          <img src="lupita/lupita-saludo.svg" alt="Lupita saludando, animada" style="width:150px;height:auto">
+          <img src="lupita/lupita-saludo-estatica.svg" alt="Versión estática" style="width:64px;height:auto;opacity:.9">
+        </div>
+        <div style="padding:18px 20px 22px;display:flex;flex-direction:column;gap:10px">
+          <h3 style="margin:0;font-size:24px;font-weight:700;color:#07336D">Saludo</h3>
+          <p style="margin:0"><strong>Cuándo:</strong> bienvenida, guía del menú, cabecera del chat y escena 1 del video.</p>
+          <p style="margin:0"><strong>Animación:</strong> flota, parpadea y mueve la mano (<code>lpWave</code>, 6 vaivenes al entrar y luego se queda quieta; el SVG del catálogo repite sin fin).</p>
+          <p style="margin:0"><strong>Props:</strong> <code>arm="wave"</code></p>
+          <p style="margin:0;font-size:15px;color:#5A4E48">lupita-saludo.svg · -estatica.svg · png/lupita-saludo.png</p>
+        </div>
+      </article>
+
+      <article style="background:#FFFFFF;border:3px solid #EADCC0;border-radius:12px;overflow:hidden;display:flex;flex-direction:column">
+        <div style="display:flex;align-items:center;justify-content:center;gap:20px;padding:28px 16px 16px;background:#FFF6E3">
+          <img src="lupita/lupita-senala.svg" alt="Lupita señalando, animada" style="width:150px;height:auto">
+          <img src="lupita/lupita-senala-estatica.svg" alt="Versión estática" style="width:64px;height:auto;opacity:.9">
+        </div>
+        <div style="padding:18px 20px 22px;display:flex;flex-direction:column;gap:10px">
+          <h3 style="margin:0;font-size:24px;font-weight:700;color:#07336D">Señala</h3>
+          <p style="margin:0"><strong>Cuándo:</strong> hay que tocar algo: Aprender, paso 3 del tema, actividad sin responder, encuesta y escenas 3 a 7 del video.</p>
+          <p style="margin:0"><strong>Animación:</strong> flota, parpadea y la mano sube y baja hacia el botón (<code>lpPoint</code>).</p>
+          <p style="margin:0"><strong>Props:</strong> <code>arm="point"</code></p>
+          <p style="margin:0;font-size:15px;color:#5A4E48">lupita-senala.svg · -estatica.svg · png/lupita-senala.png</p>
+        </div>
+      </article>
+
+      <article style="background:#FFFFFF;border:3px solid #EADCC0;border-radius:12px;overflow:hidden;display:flex;flex-direction:column">
+        <div style="display:flex;align-items:center;justify-content:center;gap:20px;padding:28px 16px 16px;background:#FFF6E3">
+          <img src="lupita/lupita-habla.svg" alt="Lupita hablando, animada" style="width:150px;height:auto">
+          <img src="lupita/lupita-habla-estatica.svg" alt="Versión estática" style="width:64px;height:auto;opacity:.9">
+        </div>
+        <div style="padding:18px 20px 22px;display:flex;flex-direction:column;gap:10px">
+          <h3 style="margin:0;font-size:24px;font-weight:700;color:#07336D">Habla</h3>
+          <p style="margin:0"><strong>Cuándo:</strong> mientras suena la voz de un texto ligado a esa Lupita (botón Escuchar o voz del video). Tiene prioridad sobre los demás estados.</p>
+          <p style="margin:0"><strong>Animación:</strong> flota, parpadea y abre y cierra la boca (<code>lpTalk</code>). El brazo vuelve a reposo.</p>
+          <p style="margin:0"><strong>Props:</strong> <code>arm="idle" mouth="talk"</code></p>
+          <p style="margin:0;font-size:15px;color:#5A4E48">lupita-habla.svg · -estatica.svg · png/lupita-habla.png</p>
+        </div>
+      </article>
+
+      <article style="background:#FFFFFF;border:3px solid #EADCC0;border-radius:12px;overflow:hidden;display:flex;flex-direction:column">
+        <div style="display:flex;align-items:center;justify-content:center;gap:20px;padding:28px 16px 16px;background:#FFF6E3">
+          <img src="lupita/lupita-celebra.svg" alt="Lupita celebrando, animada" style="width:150px;height:auto">
+          <img src="lupita/lupita-celebra-estatica.svg" alt="Versión estática" style="width:64px;height:auto;opacity:.9">
+        </div>
+        <div style="padding:18px 20px 22px;display:flex;flex-direction:column;gap:10px">
+          <h3 style="margin:0;font-size:24px;font-weight:700;color:#07336D">Celebra</h3>
+          <p style="margin:0"><strong>Cuándo:</strong> al completar las actividades, en la pantalla de gracias y en la escena 8 del video.</p>
+          <p style="margin:0"><strong>Animación:</strong> salta (<code>lpJump</code>, reemplaza a lpFloat), brazo arriba moviéndose rápido, boca abierta y tres estrellas que titilan (<code>lpTwinkle</code>, desfasadas 0 / 0,35 / 0,7 s).</p>
+          <p style="margin:0"><strong>Props:</strong> <code>arm="up" mouth="open" jump sparkles</code></p>
+          <p style="margin:0;font-size:15px;color:#5A4E48">lupita-celebra.svg · -estatica.svg · png/lupita-celebra.png</p>
+        </div>
+      </article>
+
+      <article style="background:#FFFFFF;border:3px solid #EADCC0;border-radius:12px;overflow:hidden;display:flex;flex-direction:column">
+        <div style="display:flex;align-items:center;justify-content:center;gap:20px;padding:28px 16px 16px;background:#07336D">
+          <img src="lupita/lupita-logo-estatica.svg" alt="Lupita como logo" style="width:120px;height:auto">
+          <img src="lupita/png/lupita-logo-32.png" alt="Favicon 32 px" style="width:32px;height:auto">
+        </div>
+        <div style="padding:18px 20px 22px;display:flex;flex-direction:column;gap:10px">
+          <h3 style="margin:0;font-size:24px;font-weight:700;color:#07336D">Logo</h3>
+          <p style="margin:0"><strong>Cuándo:</strong> barra superior (50 px), favicon e ícono de la app.</p>
+          <p style="margin:0"><strong>Animación:</strong> ninguna. Siempre estática, para no distraer de la navegación.</p>
+          <p style="margin:0"><strong>Props:</strong> <code>shadow={false} still</code></p>
+          <p style="margin:0;font-size:15px;color:#5A4E48">lupita-logo-estatica.svg · png/lupita-logo-512 / 192 / 32.png</p>
+        </div>
+      </article>
+
+      <article style="background:#FFFFFF;border:3px solid #EADCC0;border-radius:12px;overflow:hidden;display:flex;flex-direction:column">
+        <div style="display:flex;align-items:center;justify-content:center;gap:28px;padding:28px 16px 16px;background:#FFF6E3">
+          <img src="lupita/lupita-avatar.svg" alt="Avatar de chat" style="width:80px;height:auto">
+          <img src="lupita/lupita-avatar-habla.svg" alt="Avatar de chat hablando" style="width:80px;height:auto">
+        </div>
+        <div style="padding:18px 20px 22px;display:flex;flex-direction:column;gap:10px">
+          <h3 style="margin:0;font-size:24px;font-weight:700;color:#07336D">Avatar de chat</h3>
+          <p style="margin:0"><strong>Cuándo:</strong> junto a cada mensaje de Lupita (56 px). Izquierda: en silencio. Derecha: mientras se escucha ese mensaje.</p>
+          <p style="margin:0"><strong>Animación:</strong> sin flotar, para que el chat no se mueva. En silencio queda quieto; al leer, solo mueve la boca.</p>
+          <p style="margin:0"><strong>Props:</strong> <code>shadow={false} still</code> / <code>mouth="talk"</code></p>
+          <p style="margin:0;font-size:15px;color:#5A4E48">lupita-avatar(.svg / -habla.svg / -estatica.svg)</p>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:16px">
+    <h2 style="margin:0;font-family:'Merriweather',Georgia,serif;font-weight:900;font-size:30px;color:#07336D">2. Animaciones</h2>
+    <div style="overflow-x:auto;background:#FFFFFF;border:3px solid #EADCC0;border-radius:12px">
+      <table style="width:100%;min-width:820px;border-collapse:collapse;font-size:17px">
+        <thead>
+          <tr style="background:#07336D;color:#FFFFFF;text-align:left">
+            <th style="padding:12px 16px">Keyframe</th><th style="padding:12px 16px">Parte</th><th style="padding:12px 16px">Movimiento</th><th style="padding:12px 16px">Duración · curva · repetición</th><th style="padding:12px 16px">Origen</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-top:2px solid #EADCC0"><td style="padding:12px 16px"><code>lpFloat</code></td><td style="padding:12px 16px">Cuerpo entero (lente + mango + brazo)</td><td style="padding:12px 16px">translateY 0 → −6px → 0</td><td style="padding:12px 16px">3,2 s · ease-in-out · infinito</td><td style="padding:12px 16px">—</td></tr>
+          <tr style="border-top:2px solid #EADCC0"><td style="padding:12px 16px"><code>lpBlink</code></td><td style="padding:12px 16px">Ojos y brillos</td><td style="padding:12px 16px">scaleY 1 → 0,1 → 1 (entre 92 % y 100 %)</td><td style="padding:12px 16px">4,5 s · linear · infinito</td><td style="padding:12px 16px">centro de los ojos (fill-box)</td></tr>
+          <tr style="border-top:2px solid #EADCC0"><td style="padding:12px 16px"><code>lpWave</code></td><td style="padding:12px 16px">Brazo (saludo)</td><td style="padding:12px 16px">rotate −14° ↔ 18°</td><td style="padding:12px 16px">0,45 s · ease-in-out · 6 veces alternate · retraso 0,2 s</td><td style="padding:12px 16px">hombro 46px 124px (view-box)</td></tr>
+          <tr style="border-top:2px solid #EADCC0"><td style="padding:12px 16px"><code>lpWave</code> (rápido)</td><td style="padding:12px 16px">Brazo (celebra)</td><td style="padding:12px 16px">rotate −14° ↔ 18°</td><td style="padding:12px 16px">0,35 s · ease-in-out · infinito alternate</td><td style="padding:12px 16px">hombro 46px 124px</td></tr>
+          <tr style="border-top:2px solid #EADCC0"><td style="padding:12px 16px"><code>lpPoint</code></td><td style="padding:12px 16px">Brazo (señala)</td><td style="padding:12px 16px">translateY 0 → 8px → 0</td><td style="padding:12px 16px">1 s · ease-in-out · infinito</td><td style="padding:12px 16px">—</td></tr>
+          <tr style="border-top:2px solid #EADCC0"><td style="padding:12px 16px"><code>lpTalk</code></td><td style="padding:12px 16px">Boca (elipse)</td><td style="padding:12px 16px">scaleY 0,3 ↔ 1,1</td><td style="padding:12px 16px">0,2 s · ease-in-out · infinito alternate</td><td style="padding:12px 16px">centro de la boca (fill-box)</td></tr>
+          <tr style="border-top:2px solid #EADCC0"><td style="padding:12px 16px"><code>lpJump</code></td><td style="padding:12px 16px">Cuerpo entero</td><td style="padding:12px 16px">translateY 0 → −16px (40 %) → 0</td><td style="padding:12px 16px">0,8 s · ease-in-out · infinito</td><td style="padding:12px 16px">—</td></tr>
+          <tr style="border-top:2px solid #EADCC0"><td style="padding:12px 16px"><code>lpTwinkle</code></td><td style="padding:12px 16px">Estrellas</td><td style="padding:12px 16px">scale 0,4 → 1,1 · opacidad 0,35 → 1</td><td style="padding:12px 16px">1,1 s · ease-in-out · infinito · retrasos 0 / 0,35 / 0,7 s</td><td style="padding:12px 16px">centro de cada estrella</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:18px">
+    <div style="background:#FFFFFF;border:3px solid #EADCC0;border-radius:12px;padding:22px;display:flex;flex-direction:column;gap:12px">
+      <h2 style="margin:0;font-family:'Merriweather',Georgia,serif;font-weight:900;font-size:26px;color:#07336D">3. Qué estado mostrar</h2>
+      <p style="margin:0">Solo un estado a la vez. Si se cumplen varios, gana el de más arriba:</p>
+      <ol style="margin:0;padding-left:24px;display:flex;flex-direction:column;gap:6px">
+        <li><strong>Habla</strong>: la voz está leyendo un texto de esta pantalla.</li>
+        <li><strong>Celebra</strong>: terminó las actividades o está en Gracias.</li>
+        <li><strong>Señala</strong>: la pantalla espera que la persona toque algo.</li>
+        <li><strong>Saludo</strong>: primera vista de Bienvenida, Menú o Chat.</li>
+        <li><strong>Reposo</strong>: en cualquier otro caso.</li>
+      </ol>
+      <p style="margin:0">El cambio de estado es inmediato, sin fundidos. Al terminar la voz (<code>onend</code>), Lupita vuelve al estado que le toca a la pantalla.</p>
+    </div>
+    <div style="background:#FFFFFF;border:3px solid #EADCC0;border-radius:12px;padding:22px;display:flex;flex-direction:column;gap:12px">
+      <h2 style="margin:0;font-family:'Merriweather',Georgia,serif;font-weight:900;font-size:26px;color:#07336D">4. Tamaños y movimiento reducido</h2>
+      <ul style="margin:0;padding-left:24px;display:flex;flex-direction:column;gap:6px">
+        <li>Bienvenida y Gracias: 190 px · Video: 170 px</li>
+        <li>Burbuja guía: 104 px · Cabecera chat: 96 px</li>
+        <li>Retroalimentación: 76 px · Avatar chat: 56 px · Barra: 50 px</li>
+        <li>Proporción fija 220 × 242. Escalar solo el ancho.</li>
+      </ul>
+      <p style="margin:0">Con <code>prefers-reduced-motion: reduce</code> o con el interruptor «Animaciones: no», se usa el mismo estado sin animación (archivos <code>-estatica.svg</code>). La boca de «Habla» queda abierta y quieta, y la voz sigue funcionando.</p>
+    </div>
+    <div style="background:#FFFFFF;border:3px solid #EADCC0;border-radius:12px;padding:22px;display:flex;flex-direction:column;gap:12px">
+      <h2 style="margin:0;font-family:'Merriweather',Georgia,serif;font-weight:900;font-size:26px;color:#07336D">5. Accesibilidad</h2>
+      <ul style="margin:0;padding-left:24px;display:flex;flex-direction:column;gap:6px">
+        <li>Decorativa (<code>aria-hidden</code>) cuando va junto a un texto que ya dice lo mismo.</li>
+        <li>Con <code>role="img"</code> y <code>aria-label</code> solo en Bienvenida («Lupita, una lupa sonriente») y Gracias.</li>
+        <li>Nunca se anima rápido o de forma intermitente por más de 5 s, salvo «Celebra», que dura lo que la pantalla.</li>
+        <li>Los colores de Lupita no transmiten información: el estado siempre va acompañado de texto.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:14px">
+    <h2 style="margin:0;font-family:'Merriweather',Georgia,serif;font-weight:900;font-size:30px;color:#07336D">6. Anatomía y colores</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:24px;align-items:center;background:#FFFFFF;border:3px solid #EADCC0;border-radius:12px;padding:22px">
+      <img src="lupita/lupita-reposo-estatica.svg" alt="Anatomía de Lupita" style="width:180px;height:auto">
+      <ul style="flex:1 1 380px;margin:0;padding-left:24px;display:flex;flex-direction:column;gap:6px">
+        <li><strong>Lente:</strong> círculo r72, relleno #E69277, borde #07336D de 6 px. Vidrio: círculo r53, relleno #FFF6E3, borde de 5 px. Brillo: un arco blanco de 7 px.</li>
+        <li><strong>Mango:</strong> trazo #07336D de 30 px con un trazo interior #E69277 de 17 px, en diagonal hacia abajo a la derecha.</li>
+        <li><strong>Cara:</strong> ojos ovalados #07336D (rx9, ry12) con brillo blanco, mejillas #F2B6A2 y boca #07336D.</li>
+        <li><strong>Brazo:</strong> trazo #07336D de 10 px con una mano blanca r12 de borde 5 px. Las curvas de cada pose están en <code>LUPITA.md</code>.</li>
+        <li><strong>Sombra:</strong> elipse #7DBFB8 (no se usa en el logo ni en el avatar).</li>
+        <li><strong>Estrellas:</strong> #7DBFB8, #E69277 y #7093BF, con borde #07336D.</li>
+      </ul>
+    </div>
+  </section>
+
+</div>
+</div>
+</x-dc>
+</body>
+</html>

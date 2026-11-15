@@ -1,0 +1,14 @@
+{
+  "name": "Kit de Alfabetización Mediática para Adultos Mayores",
+  "short_name": "Kit Lupita",
+  "lang": "es-PE",
+  "description": "Le ayudo a mirar con lupa lo que ve en la televisión y en el celular.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#FFF6E3",
+  "theme_color": "#07336D",
+  "icons": [
+    { "src": "./lupita/png/lupita-logo-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "./lupita/png/lupita-logo-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
