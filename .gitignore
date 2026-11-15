@@ -13,3 +13,9 @@ desktop.ini
 # Temporales
 *.log
 server.log
+
+# Utillaje local de agentes (skills de Higgsfield). Son 1.6 MB de material del
+# proveedor que no es parte del kit y este repositorio es publico.
+.agents/
+.claude/
+skills-lock.json
