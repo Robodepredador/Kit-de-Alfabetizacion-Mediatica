@@ -100,6 +100,98 @@ button,input,textarea{font-family:inherit}
 @media (min-width:1000px) and (max-height:820px){
   [data-guide]:has(~ main[data-screen-label^="07"]){display:none}
 }
+/* Modo celular (< 680px): se mantiene intacto el piso de accesibilidad
+   (texto de lectura >= 24px, etiquetas >= 18px, botones >= 64px y 56px en linea).
+   Se optimiza la estructura para eliminar el desborde lateral y lograr que la
+   bienvenida, el video, las opciones y las actividades se vean sin quedar
+   ocultos tras la nube de Lupita. */
+@media (max-width:680px){
+  body{overflow-x:clip}
+  /* Cabecera sin desborde en pantallas de 360px */
+  header > div{gap:8px !important;padding:8px 12px !important;min-height:72px !important}
+  header > div > button{padding:8px 14px 8px 12px !important;min-height:58px !important}
+  header > div > div{gap:6px !important}
+  header > div > div > span{font-size:16px !important;line-height:1.15 !important}
+  header > div > div > div{width:42px !important;height:46px !important}
+  header > div > div > div svg{width:40px !important;height:44px !important}
+
+  /* Burbuja guia de ancho completo en celular: ahorra hasta 320px verticales */
+  [data-guide]{padding:8px 14px 0 !important}
+  [data-guide] > div{position:relative;display:block !important}
+  [data-guide] > div > div:first-child{position:absolute;top:8px;left:10px;width:50px !important;height:54px !important;z-index:2;pointer-events:none}
+  [data-guide] > div > div:first-child svg{width:50px !important;height:54px !important}
+  [data-guide] > div > div:last-child{display:grid !important;grid-template-columns:1fr auto;align-items:center;gap:6px 10px !important;padding:8px 12px 10px !important;margin-bottom:8px !important}
+  [data-guide] > div > div:last-child > span:first-child{display:none !important}
+  [data-guide] > div > div:last-child > span:nth-of-type(2){grid-column:1;grid-row:1;padding-left:54px;min-height:48px;display:flex;align-items:center;line-height:1.15}
+  [data-guide] > div > div:last-child > button{grid-column:2;grid-row:1;align-self:center !important;padding:6px 14px !important;min-height:56px !important}
+  [data-guide] > div > div:last-child > p{grid-column:1/-1;grid-row:2;line-height:1.32 !important}
+
+  /* 01 Bienvenida: todo visible en una sola pantalla (incluso en 360x640) */
+  main[data-screen-label^="01"]{padding:16px 16px 20px !important;min-height:100svh !important}
+  main[data-screen-label^="01"] > div:last-child{gap:10px !important}
+  main[data-screen-label^="01"] > div:last-child > div:first-child{flex-direction:row-reverse !important;justify-content:center;gap:12px !important}
+  main[data-screen-label^="01"] > div:last-child > div:first-child svg{width:88px !important;height:96px !important}
+  main[data-screen-label^="01"] > div:last-child > div:first-child > span{padding:8px 14px !important;font-size:22px !important}
+  main[data-screen-label^="01"] h1{font-size:28px !important;line-height:1.18 !important}
+  main[data-screen-label^="01"] > div:last-child > p{font-size:24px !important;line-height:1.35 !important}
+  main[data-screen-label^="01"] > div:last-child > div:last-child{gap:8px !important;margin-top:2px !important}
+  main[data-screen-label^="01"] > div:last-child > div:last-child > button:first-child{min-height:66px !important;padding:10px 22px !important;font-size:26px !important}
+  main[data-screen-label^="01"] > div:last-child > div:last-child > p{font-size:18px !important;line-height:1.25 !important}
+
+  /* 02 Video tutorial: escenario, subtitulos y los 3 botones visibles juntos */
+  main[data-screen-label^="02"]{padding:8px 14px 16px !important;gap:8px !important}
+  main[data-screen-label^="02"] h1{font-size:25px !important}
+  main[data-screen-label^="02"] [data-stage]{flex-wrap:nowrap !important;min-height:132px !important;padding:8px 10px !important;gap:10px !important}
+  main[data-screen-label^="02"] [data-stage] > div:first-child svg{width:72px !important;height:80px !important}
+  main[data-screen-label^="02"] [data-stage] > div:last-child{flex:1 1 0 !important;min-width:0 !important;gap:6px !important}
+  main[data-screen-label^="02"] [data-stage] > div:last-child span{font-size:20px !important;line-height:1.2 !important}
+  main[data-screen-label^="02"] [data-stage] + p{min-height:92px !important;padding:8px 12px !important;font-size:24px !important;line-height:1.28 !important}
+  main[data-screen-label^="02"] > div:last-child{display:grid !important;grid-template-columns:1fr 1fr;gap:8px !important}
+  main[data-screen-label^="02"] > div:last-child > button{min-height:62px !important;padding:6px 10px !important;font-size:20px !important}
+  main[data-screen-label^="02"] > div:last-child > button:first-child:last-child{grid-column:1/-1}
+  main[data-screen-label^="02"] > div:last-child > button:nth-child(2){grid-column:1/-1;order:3}
+
+  /* 03 Menu y 04 Aprender: las 3 tarjetas principales visibles en la primera vista */
+  main[data-screen-label^="03"],
+  main[data-screen-label^="04"]{padding:2px 14px 32px !important;gap:10px !important}
+  main[data-screen-label^="03"] > h1,
+  main[data-screen-label^="04"] > h1{font-size:26px !important;margin-bottom:0 !important}
+  main[data-screen-label^="03"] > button{padding:12px 14px !important;min-height:88px !important;gap:12px !important}
+  main[data-screen-label^="03"] > button > span:first-child{width:52px !important;height:52px !important}
+  main[data-screen-label^="03"] > button > span:nth-child(2) > span:first-child{font-size:24px !important}
+  main[data-screen-label^="03"] > button > span:nth-child(2) > span:last-child{font-size:20px !important;line-height:1.28 !important}
+
+  /* 05 Tema: contenido de lectura y boton Siguiente accesibles */
+  main[data-screen-label^="05"]{padding:2px 14px 32px !important;gap:10px !important}
+  main[data-screen-label^="05"] > div:first-child{gap:4px !important}
+  main[data-screen-label^="05"] h1{font-size:25px !important}
+  main[data-screen-label^="05"] > div:nth-child(3){padding:14px 16px !important;gap:10px !important}
+  main[data-screen-label^="05"] > div:nth-child(3) > span:first-child{width:48px !important;height:48px !important}
+  main[data-screen-label^="05"] > div:nth-child(3) p{font-size:24px !important;line-height:1.42 !important}
+
+  /* 06 Conversar: burbujas amplias y controles cercanos */
+  main[data-screen-label^="06"]{padding:10px 14px 32px !important;gap:12px !important}
+  main[data-screen-label^="06"] > div:first-child svg{width:64px !important;height:70px !important}
+  main[data-screen-label^="06"] h1{font-size:26px !important}
+  main[data-screen-label^="06"] [role="log"] > div{max-width:100% !important}
+  main[data-screen-label^="06"] [role="log"] > div > div:first-child{width:40px !important}
+  main[data-screen-label^="06"] [role="log"] > div > div:first-child svg{width:40px !important;height:44px !important}
+
+  /* 07 Practicar: ejemplo y pregunta visibles en pantalla */
+  main[data-screen-label^="07"]{padding:2px 14px 32px !important;gap:10px !important}
+  main[data-screen-label^="07"] h1{font-size:25px !important}
+  main[data-screen-label^="07"] figure{padding:14px !important}
+  [data-act-img]{height:auto !important;aspect-ratio:16/10;max-height:190px}
+
+  /* 08 Encuesta: botones de caritas holgados en 360px */
+  main[data-screen-label^="08"]{padding:2px 14px 32px !important;gap:12px !important}
+  main[data-screen-label^="08"] h1{font-size:26px !important}
+  main[data-screen-label^="08"] fieldset{padding:14px 10px !important;gap:10px !important}
+  main[data-screen-label^="08"] fieldset > div{gap:8px !important}
+  main[data-screen-label^="08"] fieldset button{min-height:118px !important;padding:10px 4px !important}
+  main[data-screen-label^="08"] fieldset button svg{width:50px !important;height:50px !important}
+  main[data-screen-label^="08"] fieldset button span{font-size:20px !important}
+}
 </style>
 </helmet>
 <div lang="es" style="min-height:100vh;background:#FFF6E3;color:#1E1816;font-family:'Atkinson Hyperlegible',system-ui,sans-serif;font-size:24px;line-height:1.5;zoom:{{ zoom }}">
@@ -126,7 +218,7 @@ button,input,textarea{font-family:inherit}
     <div style="position:relative;flex:1;min-width:0;background:#FFFFFF;border:3px solid #07336D;border-radius:10px;padding:16px 18px;display:flex;flex-direction:column;gap:12px;margin-bottom:20px">
       <span aria-hidden="true" style="position:absolute;left:-13px;bottom:26px;width:22px;height:22px;background:#FFFFFF;border-left:3px solid #07336D;border-bottom:3px solid #07336D;transform:rotate(45deg)"></span>
       <span style="font-size:18px;font-weight:700;color:#5A4E48">{{ name }} le dice:</span>
-      <p style="margin:0;font-size:24px;font-weight:700;line-height:1.4;color:#1E1816;text-wrap:pretty">{{ guideText }}</p>
+      <p onClick="{{ onGuideClick }}" style="margin:0;font-size:24px;font-weight:700;line-height:1.4;color:#1E1816;text-wrap:pretty">{{ guideText }}</p>
       <button onClick="{{ listenGuide.onClick }}" aria-pressed="{{ listenGuide.on }}" style="align-self:flex-start;display:flex;align-items:center;gap:10px;min-height:56px;padding:8px 20px;border-radius:10px;background:{{ listenGuide.bg }};color:{{ listenGuide.fg }};border:3px solid #07336D;font-size:22px;font-weight:700;cursor:pointer" style-focus="outline:4px solid #07336D;outline-offset:3px">
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ listenGuide.icon }}"></path></svg>
         <span>{{ listenGuide.label }}</span>
@@ -369,7 +461,7 @@ button,input,textarea{font-family:inherit}
       </button>
     </sc-if>
     <sc-if value="{{ hasNext }}" hint-placeholder-val="{{ true }}">
-      <button onClick="{{ nextStep }}" style="flex:2 1 220px;display:flex;align-items:center;justify-content:center;gap:12px;min-height:68px;padding:12px 24px;border-radius:10px;background:#07336D;color:#FFFFFF;border:none;font-size:26px;font-weight:700;cursor:pointer;box-shadow:0 4px 0 #041F44" style-hover="background:#052752" style-focus="outline:4px solid #07336D;outline-offset:4px">
+      <button data-next-step="1" onClick="{{ nextStep }}" style="flex:2 1 220px;display:flex;align-items:center;justify-content:center;gap:12px;min-height:68px;padding:12px 24px;border-radius:10px;background:#07336D;color:#FFFFFF;border:none;font-size:26px;font-weight:700;cursor:pointer;box-shadow:0 4px 0 #041F44" style-hover="background:#052752" style-focus="outline:4px solid #07336D;outline-offset:4px">
         <span>Siguiente</span>
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14 M12 5l7 7-7 7"></path></svg>
       </button>
@@ -397,11 +489,17 @@ button,input,textarea{font-family:inherit}
       <p style="margin:0;font-size:22px">Pregúnteme por un mensaje o una noticia.</p>
     </div>
   </div>
-  <p style="margin:0;padding:12px 16px;border-radius:8px;background:#DDE6F1;font-size:20px;line-height:1.45">Conversación de ejemplo. Las respuestas están preparadas.</p>
+  <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px;border-radius:10px;background:#DDE6F1">
+    <p style="margin:0;font-size:20px;line-height:1.4;flex:1 1 220px">Conversación de ejemplo. Las respuestas están preparadas.</p>
+    <button onClick="{{ scrollToChat }}" style="display:flex;align-items:center;gap:8px;min-height:56px;padding:8px 16px;border-radius:10px;background:#FFFFFF;color:#07336D;border:3px solid #07336D;font-size:20px;font-weight:700;cursor:pointer;flex-shrink:0" style-hover="background:#FFF6E3" style-focus="outline:4px solid #07336D;outline-offset:3px">
+      <span>Hacer una pregunta</span>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14 M19 12l-7 7-7-7"></path></svg>
+    </button>
+  </div>
   <div role="log" aria-live="polite" style="display:flex;flex-direction:column;gap:18px">
     <sc-for list="{{ msgs }}" as="msg" hint-placeholder-count="4">
       <sc-if value="{{ msg.isBot }}" hint-placeholder-val="{{ true }}">
-        <div style="display:flex;align-items:flex-start;gap:10px;max-width:94%">
+        <div data-msg-id="{{ msg.id }}" style="display:flex;align-items:flex-start;gap:10px;max-width:94%">
           <div style="flex-shrink:0;width:56px">{{ msg.avatar }}</div>
           <div style="display:flex;flex-direction:column;gap:8px;min-width:0">
             <span style="font-size:20px;font-weight:700;color:#07336D">{{ name }}</span>
@@ -422,14 +520,14 @@ button,input,textarea{font-family:inherit}
         </div>
       </sc-if>
       <sc-if value="{{ msg.isUser }}" hint-placeholder-val="{{ false }}">
-        <div style="align-self:flex-end;max-width:86%;display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+        <div data-msg-id="{{ msg.id }}" style="align-self:flex-end;max-width:86%;display:flex;flex-direction:column;align-items:flex-end;gap:6px">
           <span style="font-size:20px;font-weight:700;color:#5A4E48">Usted</span>
           <div style="background:#07336D;color:#FFFFFF;border-radius:14px 4px 14px 14px;padding:16px 18px;font-size:24px;line-height:1.5;white-space:pre-line;text-wrap:pretty">{{ msg.text }}</div>
         </div>
       </sc-if>
     </sc-for>
   </div>
-  <div style="display:flex;flex-direction:column;gap:14px;padding-top:18px;border-top:3px solid #EADCC0">
+  <div data-chat-actions="1" style="display:flex;flex-direction:column;gap:14px;padding-top:18px;border-top:3px solid #EADCC0">
     <span style="font-size:22px;font-weight:700;color:#07336D">Toque una pregunta o escriba la suya:</span>
     <div style="display:flex;flex-direction:column;gap:12px">
       <sc-for list="{{ quick }}" as="q" hint-placeholder-count="3">
@@ -1035,8 +1133,21 @@ class Component extends DCLogic {
 
   addMsgs(list) {
     this.stopSpeak();
-    this.setState({ msgs: [...this.msgs(), ...list] }, () => requestAnimationFrame(() => window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' })));
+    const firstId = list && list[0] && list[0].id;
+    this.setState({ msgs: [...this.msgs(), ...list] }, () => requestAnimationFrame(() => {
+      const el = firstId && document.querySelector(`[data-msg-id="${firstId}"]`);
+      if (el) window.scrollTo({ top: Math.max(0, el.getBoundingClientRect().top + window.scrollY - 92), behavior: 'smooth' });
+      else window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' });
+    }));
   }
+  scrollToChat = () => {
+    const el = document.querySelector('[data-chat-actions]');
+    if (el) window.scrollTo({ top: Math.max(0, el.getBoundingClientRect().top + window.scrollY - 92), behavior: 'smooth' });
+  };
+  onGuideClick = () => {
+    const btn = document.querySelector('[data-next-step]');
+    if (btn) window.scrollTo({ top: Math.max(0, btn.getBoundingClientRect().top + window.scrollY - 220), behavior: 'smooth' });
+  };
   quick(k) {
     const t = Date.now();
     if (k === 'menu') return this.go('menu');
@@ -1109,8 +1220,17 @@ class Component extends DCLogic {
       goLearn: () => this.go('learn'),
       goWelcome: () => this.go('welcome', { votes: {}, comment: '' }),
       goSurvey: () => this.go('survey'),
-      goThanks: () => this.go('thanks'),
+      goThanks: () => {
+        try {
+          const prev = JSON.parse(localStorage.getItem('kit_lupita_encuestas') || '[]');
+          prev.push({ fecha: new Date().toISOString(), votos: st.votes, comentario: st.comment });
+          localStorage.setItem('kit_lupita_encuestas', JSON.stringify(prev));
+        } catch (e) {}
+        this.go('thanks');
+      },
       goPracticeChat: () => this.startPractice('chat', 0),
+      scrollToChat: this.scrollToChat,
+      onGuideClick: this.onGuideClick,
       listenWelcome: {
         ...this.listen('welcome', textoSaludo(name)),
         ariaLabel: (sp === 'welcome') ? 'Detener audio de saludo' : 'Escuchar saludo de Lupita'
@@ -1157,7 +1277,7 @@ class Component extends DCLogic {
       chatMascot: this.M({ size: 96, arm: 'wave', mouth: /^[ubc]/.test(sp) && sp !== '' ? 'talk' : 'smile' }),
       msgs: this.msgs().map(m => {
         const li = this.listen(m.id, m.text);
-        return { text: m.text, isBot: m.from === 'bot', isUser: m.from === 'user', hasAction: !!m.action, listen: li.onClick, label: li.label, icon: li.icon, on: li.on, bg: li.bg, fg: li.fg,
+        return { id: m.id, text: m.text, isBot: m.from === 'bot', isUser: m.from === 'user', hasAction: !!m.action, listen: li.onClick, label: li.label, icon: li.icon, on: li.on, bg: li.bg, fg: li.fg,
           avatar: this.M({ size: 56, shadow: false, still: !li.on, mouth: li.on ? 'talk' : 'smile' }) };
       }),
       quick: [
