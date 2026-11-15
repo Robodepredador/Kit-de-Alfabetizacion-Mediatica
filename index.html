@@ -80,7 +80,7 @@ button,input,textarea{font-family:inherit}
   main[data-screen-label^="07"] > h1{grid-area:2/1}
   main[data-screen-label^="07"] > [data-chip]{grid-area:3/1}
   main[data-screen-label^="07"] > figure{grid-area:4/1;align-self:start}
-  main[data-screen-label^="07"] > h2{grid-area:1/2}
+  main[data-screen-label^="07"] > [data-question]{grid-area:1/2}
   main[data-screen-label^="07"] > div[role="group"]{grid-row:2/5;grid-column:2;align-self:start}
   [data-act-img]{height:min(280px,30vh) !important}
 
@@ -498,7 +498,13 @@ button,input,textarea{font-family:inherit}
       </figure>
     </sc-if>
 
-    <h2 style="margin:0;font-size:28px;font-weight:700;line-height:1.3;color:#07336D;text-wrap:pretty">{{ A.question }}</h2>
+    <div data-question style="display:flex;flex-wrap:wrap;align-items:center;gap:12px 16px">
+      <h2 style="margin:0;flex:1 1 280px;min-width:0;font-size:28px;font-weight:700;line-height:1.3;color:#07336D;text-wrap:pretty">{{ A.question }}</h2>
+      <button onClick="{{ listenAct.onClick }}" aria-pressed="{{ listenAct.on }}" style="flex-shrink:0;display:flex;align-items:center;gap:10px;min-height:56px;padding:8px 20px;border-radius:10px;background:{{ listenAct.bg }};color:{{ listenAct.fg }};border:3px solid #07336D;font-size:22px;font-weight:700;cursor:pointer" style-focus="outline:4px solid #07336D;outline-offset:3px">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ listenAct.icon }}"></path></svg>
+        <span>{{ listenAct.label }}</span>
+      </button>
+    </div>
     <div role="group" aria-label="Opciones de respuesta" style="display:flex;flex-direction:column;gap:12px">
       <sc-for list="{{ options }}" as="o" hint-placeholder-count="3">
         <button onClick="{{ o.onClick }}" aria-pressed="{{ o.selected }}" style="display:flex;align-items:center;gap:16px;text-align:left;min-height:80px;padding:14px 18px;border-radius:10px;background:{{ o.bg }};border:3px solid {{ o.border }};color:#1E1816;font-size:24px;font-weight:700;line-height:1.3;cursor:pointer" style-hover="border-color:#07336D" style-focus="outline:4px solid #07336D;outline-offset:3px">
@@ -992,6 +998,7 @@ class Component extends DCLogic {
         return { label: o.label, letter: 'ABC'[i], selected: on, bg: on ? '#DDE6F1' : '#FFFFFF', border: on ? '#07336D' : '#EADCC0', badgeBg: on ? '#07336D' : '#FFFFFF', badgeFg: on ? '#FFFFFF' : '#07336D',
           onClick: () => { this.stopSpeak(); this.setState(s2 => ({ answers: { ...s2.answers, [s2.act]: i } }), () => requestAnimationFrame(() => { const el = document.querySelector('[data-fb]'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 110, behavior: 'smooth' }); })); } };
       }),
+      listenAct: this.listen('act' + st.act, A.read + ' ' + A.question + ' ' + A.opts.map((o, i) => 'Opción ' + 'ABC'[i] + ': ' + o.label).join('. ') + '.'),
       hasFeedback: sel !== undefined,
       fb: sel !== undefined ? { title: A.opts[sel].fbTitle, text: A.opts[sel].fb } : { title: '', text: '' },
       fbMascot: this.M({ size: 76, shadow: false, mouth: sp === 'fb' + st.act ? 'talk' : 'smile' }),

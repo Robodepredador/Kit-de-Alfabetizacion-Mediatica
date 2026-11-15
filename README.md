@@ -50,10 +50,15 @@ One exception, on Practicar only: when the viewport is wide but shorter than
 820px, the guide bubble is hidden there. Activity 3 carries a photo that has to
 be large enough to examine, which puts the screen at about 808px, and the bubble
 is the 165px that do not fit. Its text is a fixed hint, identical across the
-three activities. **This also removes its Escuchar button**, the only listen
-control on the activity before answering -- if the kit is rebuilt, give the
-question its own Escuchar instead. On a viewport taller than 820px, and on
-mobile, the bubble stays.
+three activities. On a viewport taller than 820px, and on mobile, the bubble
+stays.
+
+Hiding it also took away its Escuchar button, so the question now carries its
+own (`listenAct`), next to it and wrapping below it on narrow screens. It reads
+the example, the question and the three options, labelled "Opcion A/B/C" -- on
+activity 3 that means the written description of the image, which is what
+someone who cannot see it well actually needs. Each activity keeps its own
+speech id (`act0`/`act1`/`act2`), so only one text plays at a time.
 
 **Wide screens (>=820px)**
 The mobile scale leaves the hero off-screen on a laptop: at 1536x864 the welcome
