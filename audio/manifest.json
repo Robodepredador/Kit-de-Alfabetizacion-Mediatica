@@ -123,5 +123,20 @@
   "tipo": "guia-tema-p3",
   "texto": "Piense en esta pregunta. Si quiere, practique este tema.",
   "kb": 29
+ },
+ "fbacd1b4": {
+  "tipo": "guia-practicar",
+  "texto": "Lea el ejemplo y toque la respuesta que le parezca. No hay respuestas malas.",
+  "kb": 71
+ },
+ "37c3c622": {
+  "tipo": "guia-practicar-fb",
+  "texto": "Lea mi comentario y siga cuando quiera.",
+  "kb": 35
+ },
+ "7794f9e9": {
+  "tipo": "guia-encuesta",
+  "texto": "Toque la carita que mejor diga lo que siente.",
+  "kb": 36
  }
 }

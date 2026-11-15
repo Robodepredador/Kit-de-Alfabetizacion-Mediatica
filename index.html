@@ -92,14 +92,6 @@ button,input,textarea{font-family:inherit}
   main[data-screen-label^="08"] textarea{height:84px !important;min-height:0 !important}
   main[data-screen-label^="08"] fieldset button{min-height:104px !important}
 }
-/* Practicar en pantalla baja. La actividad 3 lleva una foto que hay que poder
-   mirar: con ella el contenido no baja de ~808px, y la burbuja de guia ocupa
-   los 165px que faltan. Su texto es una pista fija, igual en las 3 actividades,
-   asi que ahi se oculta. Solo cuando el alto no da: en una pantalla de mas de
-   820px se mantiene. Ojo: con ella se va su boton Escuchar. */
-@media (min-width:1000px) and (max-height:820px){
-  [data-guide]:has(~ main[data-screen-label^="07"]){display:none}
-}
 /* Modo celular (< 680px): se mantiene intacto el piso de accesibilidad
    (texto de lectura >= 24px, etiquetas >= 18px, botones >= 64px y 56px en linea).
    Se optimiza la estructura para eliminar el desborde lateral y lograr que la
@@ -122,7 +114,7 @@ button,input,textarea{font-family:inherit}
   [data-guide] > div > div:first-child svg{width:50px !important;height:54px !important}
   [data-guide] > div > div:last-child{display:grid !important;grid-template-columns:1fr auto;align-items:center;gap:6px 10px !important;padding:8px 12px 10px !important;margin-bottom:8px !important}
   [data-guide] > div > div:last-child > span:first-child{display:none !important}
-  [data-guide] > div > div:last-child > span:nth-of-type(2){grid-column:1;grid-row:1;padding-left:54px;min-height:48px;display:flex;align-items:center;line-height:1.15}
+  [data-guide] > div > div:last-child > span:nth-of-type(2){grid-column:1;grid-row:1;padding-left:54px;line-height:1.2}
   [data-guide] > div > div:last-child > button{grid-column:2;grid-row:1;align-self:center !important;padding:6px 14px !important;min-height:56px !important}
   [data-guide] > div > div:last-child > p{grid-column:1/-1;grid-row:2;line-height:1.32 !important}
 
@@ -748,7 +740,7 @@ var AUDIO_CLIPS = {
   "7c362158": 1, "783c18e7": 1, "f62cb4c8": 1, "359fae38": 1, "dee77dc9": 1, "9783c9a1": 1,
   "8083943b": 1, "93ab54f0": 1, "43c2d4ee": 1, "b79c8b95": 1, "815ae919": 1, "9192d65f": 1,
   "c0382506": 1, "b0cac4a8": 1, "b07c6a2d": 1, "ed059419": 1, "11cc0770": 1, "976a2315": 1,
-  "b87f4e62": 1
+  "b87f4e62": 1, "fbacd1b4": 1, "37c3c622": 1, "7794f9e9": 1
 };
 if (typeof fetch === 'function') {
   fetch('./audio/manifest.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; })
@@ -993,9 +985,16 @@ class Component extends DCLogic {
     } else if (s === 'lesson') {
       text = STEP_GUIDE[st.step] || STEP_GUIDE[0];
       id = 'guide-lesson-' + st.step;
+    } else if (s === 'practice' && !st.done) {
+      const sel = st.answers[st.act];
+      text = sel === undefined ? 'Lea el ejemplo y toque la respuesta que le parezca. No hay respuestas malas.' : 'Lea mi comentario y siga cuando quiera.';
+      id = sel === undefined ? 'guide-practice' : 'guide-practice-fb';
     } else if (s === 'practice' && st.done) {
       text = '¡Muy bien! Terminó las tres actividades.';
       id = 'guide-practice-done';
+    } else if (s === 'survey') {
+      text = 'Toque la carita que mejor diga lo que siente.';
+      id = 'guide-survey';
     }
     if (text) {
       setTimeout(() => {
@@ -1202,7 +1201,7 @@ class Component extends DCLogic {
     }
     if (s === 'practice' && st.done) { guideText = '¡Muy bien! Terminó las tres actividades.'; guideArm = 'up'; guideCel = true; }
     if (s === 'survey') { guideText = 'Toque la carita que mejor diga lo que siente.'; }
-    const guideId = s === 'lesson' ? 'guide-lesson-' + st.step : (s === 'practice' && st.done) ? 'guide-practice-done' : 'guide-' + s;
+    const guideId = s === 'lesson' ? 'guide-lesson-' + st.step : s === 'practice' ? (st.done ? 'guide-practice-done' : sel === undefined ? 'guide-practice' : 'guide-practice-fb') : 'guide-' + s;
     const guideTalk = sp === guideId;
     const listenGuide = this.listen(guideId, guideText);
 
@@ -1297,7 +1296,7 @@ class Component extends DCLogic {
       options: A.opts.map((o, i) => {
         const on = sel === i;
         return { label: o.label, letter: 'ABC'[i], selected: on, bg: on ? '#DDE6F1' : '#FFFFFF', border: on ? '#07336D' : '#EADCC0', badgeBg: on ? '#07336D' : '#FFFFFF', badgeFg: on ? '#FFFFFF' : '#07336D',
-          onClick: () => { this.stopSpeak(); this.setState(s2 => ({ answers: { ...s2.answers, [s2.act]: i } }), () => requestAnimationFrame(() => { const el = document.querySelector('[data-fb]'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 110, behavior: 'smooth' }); })); } };
+          onClick: () => { this.stopSpeak(); this.setState(s2 => ({ answers: { ...s2.answers, [s2.act]: i } }), () => { this.hablarGuia(); requestAnimationFrame(() => { const el = document.querySelector('[data-fb]'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 110, behavior: 'smooth' }); }); }); } };
       }),
       listenAct: this.listen('act' + st.act, A.read + ' ' + A.question + ' ' + A.opts.map((o, i) => 'Opción ' + 'ABC'[i] + ': ' + o.label).join('. ') + '.'),
       hasFeedback: sel !== undefined,
