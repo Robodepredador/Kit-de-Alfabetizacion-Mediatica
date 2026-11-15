@@ -98,5 +98,30 @@
   "tipo": "retroalim",
   "texto": "Muy bien visto. Pide urgencia, grita con MAYÚSCULAS y no dice qué médico lo afirma ni dónde se publicó. Ante una duda de salud, consulte a su médico.",
   "kb": 165
+ },
+ "b07c6a2d": {
+  "tipo": "guia-menu",
+  "texto": "Buenas tardes. Toque una de las opciones.",
+  "kb": 55
+ },
+ "ed059419": {
+  "tipo": "guia-aprender",
+  "texto": "Elija un tema. Le explico cada uno en tres pasos cortos.",
+  "kb": 77
+ },
+ "11cc0770": {
+  "tipo": "guia-tema-p1",
+  "texto": "Lea con calma. Cuando termine, toque «Siguiente».",
+  "kb": 57
+ },
+ "976a2315": {
+  "tipo": "guia-tema-p2",
+  "texto": "Este es un ejemplo de la vida diaria.",
+  "kb": 52
+ },
+ "b87f4e62": {
+  "tipo": "guia-tema-p3",
+  "texto": "Piense en esta pregunta. Si quiere, practique este tema.",
+  "kb": 29
  }
 }

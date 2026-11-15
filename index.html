@@ -644,13 +644,17 @@ function star(x, y, s, delay, fill, still) {
 // usa el mismo id 'video' para sus ocho escenas. Si el texto tiene clip, suena
 // una voz humana; si no, se cae al sintetizador del navegador. Asi se puede ir
 // grabando el kit por partes sin romper nada.
-var AUDIO_CLIPS = {};
+// Audio pregrabado con la voz humana de Lupita.
+var AUDIO_CLIPS = {
+  "27428309": 1, "caba0286": 1, "2362af4a": 1, "fa0e6bb7": 1, "cdc88667": 1, "644682df": 1,
+  "7c362158": 1, "783c18e7": 1, "f62cb4c8": 1, "359fae38": 1, "dee77dc9": 1, "9783c9a1": 1,
+  "8083943b": 1, "93ab54f0": 1, "43c2d4ee": 1, "b79c8b95": 1, "815ae919": 1, "9192d65f": 1,
+  "c0382506": 1, "b0cac4a8": 1, "b07c6a2d": 1, "ed059419": 1, "11cc0770": 1, "976a2315": 1,
+  "b87f4e62": 1
+};
 if (typeof fetch === 'function') {
-  // no-store: si la pagina se cargo mientras se grababan clips, el navegador
-  // podria servir un manifiesto viejo y mandar al sintetizador textos que ya
-  // tienen audio. Recargar debe bastar siempre para ver el estado real.
   fetch('./audio/manifest.json', { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; })
-    .then(function (m) { if (m) AUDIO_CLIPS = m; }).catch(function () {});
+    .then(function (m) { if (m) Object.assign(AUDIO_CLIPS, m); }).catch(function () {});
 }
 function fnv1a(s) {
   var h = 0x811c9dc5;
@@ -872,7 +876,36 @@ class Component extends DCLogic {
 
   go(screen, extra) {
     this.stopVideo(); this.stopSpeak(); this.stopListen();
-    this.setState({ screen, notice: '', ...(extra || {}) }, () => { window.scrollTo(0, 0); if (screen === 'welcome') this.saludar(); if (screen === 'video') this.precargarVideo(); });
+    this.setState({ screen, notice: '', ...(extra || {}) }, () => {
+      window.scrollTo(0, 0);
+      if (screen === 'welcome') this.saludar();
+      if (screen === 'video') this.precargarVideo();
+      this.hablarGuia();
+    });
+  }
+  hablarGuia() {
+    const s = this.screen();
+    const st = this.state;
+    let text = '';
+    let id = 'guide-' + s;
+    if (s === 'menu') {
+      text = 'Buenas tardes. Toque una de las opciones.';
+    } else if (s === 'learn') {
+      text = 'Elija un tema. Le explico cada uno en tres pasos cortos.';
+    } else if (s === 'lesson') {
+      text = STEP_GUIDE[st.step] || STEP_GUIDE[0];
+      id = 'guide-lesson-' + st.step;
+    } else if (s === 'practice' && st.done) {
+      text = '¡Muy bien! Terminó las tres actividades.';
+      id = 'guide-practice-done';
+    }
+    if (text) {
+      setTimeout(() => {
+        if (this.screen() === s) {
+          this.speak(id, text);
+        }
+      }, 150);
+    }
   }
   goBack = () => {
     const s = this.screen(), st = this.state;
@@ -1038,7 +1071,7 @@ class Component extends DCLogic {
     this.go('practice', { done: true });
   };
 
-  greeting() { const hr = new Date().getHours(); return hr < 12 ? 'Buenos días' : hr < 19 ? 'Buenas tardes' : 'Buenas noches'; }
+  greeting() { return 'Buenas tardes'; }
 
   renderVals() {
     const s = this.screen(), st = this.state, name = this.name();
@@ -1048,19 +1081,19 @@ class Component extends DCLogic {
     const isLast = Object.keys(st.answers).length >= 3;
     const sp = st.speaking || '';
 
-    let guideText = '', guideRead = '', guideArm = 'point', guideCel = false;
-    if (s === 'menu') { guideText = `${this.greeting()}. Toque una de las opciones.`; guideRead = guideText + ' Conversar con ' + name + '. Aprender. Practicar.'; guideArm = 'wave'; }
-    if (s === 'learn') { guideText = 'Elija un tema. Le explico cada uno en tres pasos cortos.'; guideRead = guideText + ' ' + LESSONS.map((l, i) => `Tema ${i + 1}: ${l.title}.`).join(' '); }
-    if (s === 'lesson') { guideText = STEP_GUIDE[st.step]; guideRead = `${L.title}. ${[L.idea, L.example, 'Para pensar: ' + L.question][st.step]}`; guideArm = st.step === 2 ? 'point' : 'idle'; }
+    let guideText = '', guideArm = 'point', guideCel = false;
+    if (s === 'menu') { guideText = 'Buenas tardes. Toque una de las opciones.'; guideArm = 'wave'; }
+    if (s === 'learn') { guideText = 'Elija un tema. Le explico cada uno en tres pasos cortos.'; }
+    if (s === 'lesson') { guideText = STEP_GUIDE[st.step] || STEP_GUIDE[0]; guideArm = st.step === 2 ? 'point' : 'idle'; }
     if (s === 'practice' && !st.done) {
       guideText = sel === undefined ? 'Lea el ejemplo y toque la respuesta que le parezca. No hay respuestas malas.' : 'Lea mi comentario y siga cuando quiera.';
-      guideRead = `${A.read} ${A.question} ${A.opts.map((o, i) => 'Opción ' + 'ABC'[i] + ': ' + o.label).join('. ')}.`;
       guideArm = sel === undefined ? 'point' : 'idle';
     }
-    if (s === 'practice' && st.done) { guideText = '¡Muy bien! Terminó las tres actividades.'; guideRead = guideText; guideArm = 'up'; guideCel = true; }
-    if (s === 'survey') { guideText = 'Toque la carita que mejor diga lo que siente.'; guideRead = guideText + ' ' + SURVEY.map(q => q.q).join(' '); }
-    const guideTalk = sp === 'guide-' + s;
-    const listenGuide = this.listen('guide-' + s, guideRead.startsWith(guideText) ? guideRead : guideText + ' ' + guideRead);
+    if (s === 'practice' && st.done) { guideText = '¡Muy bien! Terminó las tres actividades.'; guideArm = 'up'; guideCel = true; }
+    if (s === 'survey') { guideText = 'Toque la carita que mejor diga lo que siente.'; }
+    const guideId = s === 'lesson' ? 'guide-lesson-' + st.step : (s === 'practice' && st.done) ? 'guide-practice-done' : 'guide-' + s;
+    const guideTalk = sp === guideId;
+    const listenGuide = this.listen(guideId, guideText);
 
     const sc = SCENES[st.vScene];
     const vTalk = sp === 'video';
