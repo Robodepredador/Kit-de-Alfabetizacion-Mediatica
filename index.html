@@ -36,6 +36,15 @@ button,input,textarea{font-family:inherit}
 @keyframes lpJump{0%,100%{transform:translateY(0)}40%{transform:translateY(-16px)}}
 @keyframes lpTwinkle{0%,100%{transform:scale(.4);opacity:.35}50%{transform:scale(1.1);opacity:1}}
 @media (prefers-reduced-motion: reduce){*{animation:none !important}}
+/* Pantallas anchas (laptop/escritorio). La escala movil deja el hero fuera de
+   pantalla: a 1536x864 la bienvenida medía 881px y no entraba. Se reducen solo
+   los titulos y la mascota decorativa. El texto de lectura (24-26px) y los
+   botones (64-72px) NO se tocan: son el piso de accesibilidad del kit. */
+@media (min-width:820px){
+  h1{font-size:clamp(30px,3.2vw,38px) !important}
+  svg[viewBox="0 0 220 242"]{max-width:132px;max-height:145px}
+  [data-stage]{min-height:min(360px,30vh) !important}
+}
 </style>
 </helmet>
 <div lang="es" style="min-height:100vh;background:#FFF6E3;color:#1E1816;font-family:'Atkinson Hyperlegible',system-ui,sans-serif;font-size:24px;line-height:1.5;zoom:{{ zoom }}">
@@ -110,7 +119,7 @@ button,input,textarea{font-family:inherit}
     </sc-for>
   </div>
   <div style="background:#FFFFFF;border:3px solid #07336D;border-radius:12px;overflow:hidden">
-    <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:20px 32px;padding:28px 20px;min-height:360px">
+    <div data-stage style="display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:20px 32px;padding:28px 20px;min-height:360px">
       <div style="flex:0 0 auto;display:flex;justify-content:center">{{ videoMascot }}</div>
       <div style="flex:1 1 300px;max-width:440px;display:flex;flex-direction:column;align-items:center;gap:16px">
 

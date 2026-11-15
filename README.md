@@ -37,6 +37,13 @@ Web prototype (mobile first, also desktop) of an educational assistant that help
 - Titles: Merriweather 900. H1 `clamp(30–32px, 5–6vw, 40–50px)`, line-height 1.2.
 - Body: Atkinson Hyperlegible 400/700. Base 24px, line-height 1.5. Lesson text 26px. Buttons 24–28px, weight 700. Small labels 18–22px (minimum 18px).
 
+**Wide screens (>=820px)**
+The mobile scale leaves the hero off-screen on a laptop: at 1536x864 the welcome
+screen measured 881px. On wide viewports only the headings and the decorative
+mascot shrink -- H1 caps at `clamp(30px,3.2vw,38px)`, the mascot at 132px, and
+the video stage at `min(360px,30vh)`. Reading text (24-26px) and button heights
+(64-72px) are never reduced: they are the accessibility floor.
+
 **Shape and spacing**
 - Radius: buttons 10px, cards 12px, chat bubbles 14px with one corner at 4px, progress bars 3px.
 - Borders 3px. Primary buttons have `box-shadow: 0 4px 0 #041F44` (5px on the hero button).
