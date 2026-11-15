@@ -908,20 +908,93 @@ const SCREENS = { 'Bienvenida': 'welcome', 'Video': 'video', 'Menú': 'menu', 'A
 class Component extends DCLogic {
   state = { screen: null, lesson: 0, step: 0, act: 0, answers: {}, done: false, from: 'menu', videoFrom: 'welcome', msgs: null, draft: '', speaking: null, listening: null, votes: {}, comment: '', notice: '', vScene: 0, vPlaying: false, vEnded: false };
 
-  componentDidMount() { document.documentElement.lang = 'es'; this.saludar(); }
+  componentDidMount() {
+    document.documentElement.lang = 'es';
+    this.armarDesbloqueoAudio();
+    this.saludar();
+  }
 
-  // El saludo suena al entrar a la bienvenida si el navegador lo permite (o tras el
-  // primer toque en la pantalla). Los ocho clips del tutorial se piden por adelantado
-  // al entrar al video para evitar demoras.
-  precargarVideo() {
-    if (this.precargados) return;
-    this.precargados = SCENES.map(sc => {
-      const h = fnv1a(sc.text(this.name()));
-      if (!AUDIO_CLIPS[h]) return null;
+  getAudioEl() {
+    if (!this.audioEl) {
       const a = new Audio();
       a.preload = 'auto';
-      a.src = './audio/' + h + '.mp3';
-      return a;
+      a.playsInline = true;
+      a.setAttribute('playsinline', '');
+      this.audioEl = a;
+    }
+    return this.audioEl;
+  }
+
+  getAudioCtx() {
+    if (!this.audioCtx) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (AC) { try { this.audioCtx = new AC(); } catch (e) {} }
+    }
+    if (this.audioCtx && this.audioCtx.state === 'suspended') {
+      try { this.audioCtx.resume(); } catch (e) {}
+    }
+    return this.audioCtx;
+  }
+
+  armarDesbloqueoAudio() {
+    if (this.desbloqueoArmado) return;
+    this.desbloqueoArmado = true;
+    const desbloquear = () => {
+      this.toqueRecibido = true;
+      if (navigator.audioSession) {
+        try { navigator.audioSession.type = 'playback'; } catch (e) {}
+      }
+      const ctx = this.getAudioCtx();
+      if (ctx && !this.ctxPrimed) {
+        try {
+          const buf = ctx.createBuffer(1, 1, 22050);
+          const src = ctx.createBufferSource();
+          src.buffer = buf;
+          src.connect(ctx.destination);
+          src.start(0);
+          this.ctxPrimed = true;
+        } catch (e) {}
+      }
+    };
+    document.addEventListener('pointerdown', desbloquear, { passive: true });
+    document.addEventListener('touchstart', desbloquear, { passive: true });
+    document.addEventListener('touchend', desbloquear, { passive: true });
+    document.addEventListener('click', desbloquear, { passive: true });
+    document.addEventListener('keydown', desbloquear, { passive: true });
+  }
+
+  obtenerClipBuffer(clave) {
+    this.audioBuffers = this.audioBuffers || {};
+    this.blobUrls = this.blobUrls || {};
+    this.fetchPromises = this.fetchPromises || {};
+    if (this.audioBuffers[clave]) return Promise.resolve(this.audioBuffers[clave]);
+    if (!this.fetchPromises[clave]) {
+      this.fetchPromises[clave] = fetch('./audio/' + clave + '.mp3')
+        .then(r => r.ok ? r.arrayBuffer() : Promise.reject())
+        .then(buf => {
+          this.audioBuffers[clave] = buf;
+          try {
+            this.blobUrls[clave] = URL.createObjectURL(new Blob([buf], { type: 'audio/mpeg' }));
+          } catch (e) {}
+          return buf;
+        })
+        .catch(err => {
+          delete this.fetchPromises[clave];
+          throw err;
+        });
+    }
+    return this.fetchPromises[clave];
+  }
+
+  // Los ocho clips del tutorial se descargan en memoria de forma secuencial
+  // sin crear múltiples elementos <audio> que bloquean el decodificador en celulares.
+  precargarVideo() {
+    if (this.precargados) return;
+    this.precargados = true;
+    const claves = SCENES.map(sc => fnv1a(sc.text(this.name()))).filter(h => AUDIO_CLIPS[h]);
+    let p = Promise.resolve();
+    claves.forEach(h => {
+      p = p.then(() => this.obtenerClipBuffer(h).catch(() => {}));
     });
   }
 
@@ -964,13 +1037,14 @@ class Component extends DCLogic {
   }
   msgs() { return this.state.msgs || this.initialMsgs(); }
 
-  go(screen, extra) {
+  go(screen, extra, cb) {
     this.stopVideo(); this.stopSpeak(); this.stopListen();
     this.setState({ screen, notice: '', ...(extra || {}) }, () => {
       window.scrollTo(0, 0);
       if (screen === 'welcome') this.saludar();
       if (screen === 'video') this.precargarVideo();
       this.hablarGuia();
+      if (cb) cb();
     });
   }
   hablarGuia() {
@@ -997,11 +1071,7 @@ class Component extends DCLogic {
       id = 'guide-survey';
     }
     if (text) {
-      setTimeout(() => {
-        if (this.screen() === s) {
-          this.speak(id, text);
-        }
-      }, 150);
+      this.speak(id, text);
     }
   }
   goBack = () => {
@@ -1015,39 +1085,126 @@ class Component extends DCLogic {
   startPractice(from, act) { this.go('practice', { from, act, answers: {}, done: false }); }
 
   stopSpeak() {
-    if (this.clip) { try { this.clip.onended = this.clip.onerror = null; this.clip.pause(); } catch (e) {} this.clip = null; }
+    this.speakToken = (this.speakToken || 0) + 1;
+    clearTimeout(this.audioWatchdog);
+    if (this.webSource) {
+      try { this.webSource.onended = null; this.webSource.stop(0); } catch (e) {}
+      this.webSource = null;
+    }
+    if (this.clip) {
+      try { this.clip.onended = this.clip.onerror = this.clip.onplaying = null; this.clip.pause(); } catch (e) {}
+      this.clip = null;
+    }
     if (window.speechSynthesis) window.speechSynthesis.cancel();
     if (this.state.speaking) this.setState({ speaking: null });
   }
+
+  reproducirWebAudio(clave, token, fin, alFallar) {
+    const ctx = this.getAudioCtx();
+    if (!ctx) return alFallar ? alFallar() : fin(true);
+    this.decodedBuffers = this.decodedBuffers || {};
+    const tocarBuffer = audioBuf => {
+      if (this.speakToken !== token) return;
+      try {
+        if (ctx.state === 'suspended') { try { ctx.resume(); } catch (e) {} }
+        const src = ctx.createBufferSource();
+        src.buffer = audioBuf;
+        src.connect(ctx.destination);
+        this.webSource = src;
+        src.onended = () => {
+          if (this.speakToken !== token) return;
+          this.webSource = null;
+          fin(false);
+        };
+        src.start(0);
+      } catch (e) {
+        if (alFallar) alFallar(); else fin(true);
+      }
+    };
+    if (this.decodedBuffers[clave]) {
+      return tocarBuffer(this.decodedBuffers[clave]);
+    }
+    this.obtenerClipBuffer(clave)
+      .then(buf => {
+        if (this.speakToken !== token) return;
+        ctx.decodeAudioData(
+          buf.slice(0),
+          audioBuf => {
+            this.decodedBuffers[clave] = audioBuf;
+            tocarBuffer(audioBuf);
+          },
+          () => { if (this.speakToken === token) { if (alFallar) alFallar(); else fin(true); } }
+        );
+      })
+      .catch(() => { if (this.speakToken === token) { if (alFallar) alFallar(); else fin(true); } });
+  }
+
   speak(id, text, onEnd, sinRespaldo) {
     if (!onEnd && this.state.speaking === id) { this.stopSpeak(); return true; }
     this.stopSpeak();
+    const token = this.speakToken;
     const clave = fnv1a(String(text));
     if (AUDIO_CLIPS[clave]) {
-      const a = new Audio('./audio/' + clave + '.mp3');
-      this.clip = a;
+      let finalizado = false;
       const fin = conFallo => {
-        if (this.clip === a) this.clip = null;
+        if (finalizado || this.speakToken !== token) return;
+        finalizado = true;
+        clearTimeout(this.audioWatchdog);
+        this.clip = null;
         if (conFallo) {
-          // sinRespaldo: el saludo prefiere callarse y reintentar al primer
-          // toque antes que delatarse con la voz sintetica.
           if (sinRespaldo) { if (this.state.speaking === id) this.setState({ speaking: null }); return; }
+          if (this.state.speaking === id) this.setState({ speaking: null });
+          if (onEnd) { onEnd(); return; }
           return this.sintetizar(id, text, onEnd);
         }
         if (this.state.speaking === id) this.setState({ speaking: null });
         onEnd && onEnd();
       };
-      a.onended = () => fin(false);
-      // Un tropiezo de red no deberia costar la voz humana: se reintenta una vez
-      // antes de ceder al sintetizador.
-      a.onerror = () => {
-        if (a.dataset.reintentado) return fin(true);
-        a.dataset.reintentado = '1';
-        a.load();
-        a.play().catch(() => fin(true));
+      const reproducirTag = () => {
+        if (finalizado || this.speakToken !== token) return;
+        const a = this.getAudioEl();
+        this.clip = a;
+        let haEmpezado = false;
+        a.onplaying = () => {
+          if (this.speakToken !== token) return;
+          haEmpezado = true;
+          clearTimeout(this.audioWatchdog);
+        };
+        a.onended = () => fin(false);
+        a.onerror = () => fin(true);
+        a.src = (this.blobUrls && this.blobUrls[clave]) || ('./audio/' + clave + '.mp3');
+        if (!sinRespaldo) {
+          this.audioWatchdog = setTimeout(() => {
+            if (this.speakToken === token && !haEmpezado) {
+              try { a.onended = a.onerror = a.onplaying = null; a.pause(); } catch (e) {}
+              this.reproducirWebAudio(clave, token, fin);
+            }
+          }, 1500);
+        }
+        try {
+          const prom = a.play();
+          if (prom && typeof prom.catch === 'function') {
+            prom.catch(() => {
+              if (sinRespaldo) return fin(true);
+              clearTimeout(this.audioWatchdog);
+              this.reproducirWebAudio(clave, token, fin);
+            });
+          }
+        } catch (e) {
+          if (sinRespaldo) return fin(true);
+          clearTimeout(this.audioWatchdog);
+          this.reproducirWebAudio(clave, token, fin);
+        }
       };
       this.setState({ speaking: id });
-      a.play().catch(() => fin(true));
+      // En celulares, tras ~15-20s sin tocar la pantalla (paso 4 del video), el navegador
+      // bloquea HTMLAudioElement.play() dentro de setTimeout, pero un AudioContext ya
+      // activado por el primer toque nunca caduca ni congela la escena.
+      if (!sinRespaldo && this.toqueRecibido && this.getAudioCtx()) {
+        this.reproducirWebAudio(clave, token, fin, reproducirTag);
+      } else {
+        reproducirTag();
+      }
       return true;
     }
     return this.sintetizar(id, text, onEnd);
@@ -1112,23 +1269,24 @@ class Component extends DCLogic {
   // Video tutorial
   playScene(i) {
     clearTimeout(this.vt); clearTimeout(this.vSafe);
-    const ready = { time: false, voice: false };
+    const ready = { done: false };
     this.vReady = ready;
     this.setState({ vScene: i, vPlaying: true, vEnded: false });
-    const check = () => {
-      if (this.vReady !== ready || !this.state.vPlaying) return;
-      if (ready.time && ready.voice) {
-        if (i < SCENES.length - 1) this.vt = setTimeout(() => this.playScene(i + 1), 500);
-        else this.setState({ vPlaying: false, vEnded: true });
-      }
+    const avanzar = delay => {
+      if (this.vReady !== ready || ready.done || !this.state.vPlaying) return;
+      ready.done = true;
+      clearTimeout(this.vt); clearTimeout(this.vSafe);
+      if (i < SCENES.length - 1) this.vt = setTimeout(() => this.playScene(i + 1), delay);
+      else this.setState({ vPlaying: false, vEnded: true });
     };
-    const spoke = this.props.videoVoice !== false && this.speak('video', SCENES[i].text(this.name()), () => { ready.voice = true; check(); });
-    if (!spoke) ready.voice = true;
-    this.vSafe = setTimeout(() => { ready.voice = true; check(); }, SCENES[i].ms + 9000);
-    this.vt = setTimeout(() => { ready.time = true; check(); }, SCENES[i].ms);
+    const spoke = this.props.videoVoice !== false && this.speak('video', SCENES[i].text(this.name()), () => avanzar(350));
+    if (!spoke) {
+      this.vt = setTimeout(() => avanzar(300), SCENES[i].ms);
+    }
+    this.vSafe = setTimeout(() => avanzar(200), SCENES[i].ms + 6000);
   }
   stopVideo() { clearTimeout(this.vt); clearTimeout(this.vSafe); this.vReady = null; if (this.state.vPlaying) this.setState({ vPlaying: false }); }
-  openVideo(from) { this.go('video', { videoFrom: from, vScene: 0, vEnded: false }); setTimeout(() => this.playScene(0), 50); }
+  openVideo(from) { this.go('video', { videoFrom: from, vScene: 0, vEnded: false }, () => this.playScene(0)); }
 
   addMsgs(list) {
     this.stopSpeak();
