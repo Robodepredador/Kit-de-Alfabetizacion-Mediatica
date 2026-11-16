@@ -98,14 +98,14 @@ button,input,textarea{font-family:inherit}
    ocultos tras la nube de Lupita. */
 @media (max-width:680px){
   body{overflow-x:clip}
-  /* Cabecera sin desborde en pantallas de 360px */
-  header > div{gap:8px !important;padding:8px 12px !important;min-height:72px !important}
-  header > div > button{padding:8px 14px 8px 12px !important;min-height:58px !important;font-size:22px !important}
-  header > div > div{gap:6px !important}
-  header > div > div > span{font-size:16px !important;line-height:1.15 !important}
-  header > div:has([data-home-btn]) > [data-brand] > span{display:none !important}
-  header > div > div > div{width:42px !important;height:46px !important}
-  header > div > div > div svg{width:40px !important;height:44px !important}
+  /* Barra de navegacion fija en la parte inferior para uso a una sola mano (zona del pulgar) */
+  header{position:fixed !important;top:auto !important;bottom:0 !important;left:0;right:0;z-index:30 !important;border-top:3px solid #EADCC0;box-shadow:0 -6px 20px rgba(7,51,109,0.32)}
+  header > div{gap:8px !important;padding:8px 10px calc(8px + env(safe-area-inset-bottom, 0px)) !important;min-height:74px !important}
+  header > div > button{flex:1 1 0 !important;justify-content:center !important;padding:8px 6px !important;min-height:58px !important;font-size:20px !important;gap:6px !important}
+  header > div > button svg{width:22px !important;height:22px !important;flex-shrink:0}
+  header > div > [data-tut-btn]{display:flex !important}
+  header > div > [data-brand]{display:none !important}
+  header ~ [data-fab]{display:none !important}
 
   /* Burbuja guia de ancho completo en celular: ahorra hasta 320px verticales */
   [data-guide]{padding:8px 14px 0 !important}
@@ -209,6 +209,12 @@ button,input,textarea{font-family:inherit}
       <button data-home-btn="1" onClick="{{ goMenu }}" aria-label="Ir al menú principal" style="display:flex;align-items:center;gap:8px;min-height:64px;padding:10px 20px 10px 16px;border-radius:10px;background:#FFFFFF;color:#07336D;border:none;font-size:24px;font-weight:700;cursor:pointer;flex-shrink:0" style-focus="outline:4px solid #FFFFFF;outline-offset:3px" style-hover="background:#FFF6E3">
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z M9 22V12h6v10"></path></svg>
         <span>Menú</span>
+      </button>
+    </sc-if>
+    <sc-if value="{{ showFab }}" hint-placeholder-val="{{ false }}">
+      <button data-tut-btn="1" onClick="{{ openVideoModal }}" aria-label="Abrir ventana emergente: ¿Cómo se usa?" style="display:none;align-items:center;gap:8px;min-height:64px;padding:10px 20px 10px 16px;border-radius:10px;background:#FFFFFF;color:#07336D;border:none;font-size:24px;font-weight:700;cursor:pointer;flex-shrink:0" style-focus="outline:4px solid #FFFFFF;outline-offset:3px" style-hover="background:#FFF6E3">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 1 0 0-20z M10 8l6 4-6 4z"></path></svg>
+        <span>Ayuda</span>
       </button>
     </sc-if>
     <div data-brand="1" style="display:flex;align-items:center;gap:10px;margin-left:auto;min-width:0">
