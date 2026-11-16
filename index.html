@@ -159,13 +159,14 @@ button,input,textarea{font-family:inherit}
   main[data-screen-label^="05"] > div:nth-child(3) > span:first-child{width:48px !important;height:48px !important}
   main[data-screen-label^="05"] > div:nth-child(3) p{font-size:24px !important;line-height:1.42 !important}
 
-  /* 06 Conversar: burbujas amplias y controles cercanos */
-  main[data-screen-label^="06"]{padding:10px 14px 32px !important;gap:12px !important}
-  main[data-screen-label^="06"] > div:first-child svg{width:64px !important;height:70px !important}
-  main[data-screen-label^="06"] h1{font-size:26px !important}
-  main[data-screen-label^="06"] [role="log"] > div{max-width:100% !important}
-  main[data-screen-label^="06"] [role="log"] > div > div:first-child{width:40px !important}
-  main[data-screen-label^="06"] [role="log"] > div > div:first-child svg{width:40px !important;height:44px !important}
+  /* 06 Conversar: interfaz tipo Claude / ChatGPT en celular */
+  main[data-screen-label^="06"]{padding:10px 12px 90px !important;gap:12px !important;min-height:100svh}
+  main[data-screen-label^="06"] [data-chat-head]{padding-right:148px}
+  main[data-screen-label^="06"] [data-chat-head] svg{width:46px !important;height:50px !important}
+  main[data-screen-label^="06"] h1{font-size:22px !important}
+  main[data-screen-label^="06"] [role="log"]{flex:1}
+  main[data-screen-label^="06"] [data-chat-actions]{position:sticky !important;bottom:calc(74px + env(safe-area-inset-bottom, 0px)) !important;z-index:15;background:linear-gradient(180deg, rgba(255,246,227,0) 0%, #FFF6E3 14%, #FFF6E3 100%);padding:10px 0 8px !important;margin-top:auto}
+  main[data-screen-label^="06"] ~ [data-fab]{top:10px !important;bottom:auto !important;right:12px !important;min-height:48px !important;padding:6px 12px !important;font-size:18px !important}
 
   /* 07 Practicar: ejemplo y pregunta visibles en pantalla */
   main[data-screen-label^="07"]{padding:2px 14px 32px !important;gap:10px !important}
@@ -484,75 +485,63 @@ button,input,textarea{font-family:inherit}
 </sc-if>
 
 <sc-if value="{{ isChat }}" hint-placeholder-val="{{ false }}">
-<main data-screen-label="06 Conversar" style="max-width:820px;margin:0 auto;padding:24px 16px 48px;display:flex;flex-direction:column;gap:20px">
-  <div style="display:flex;align-items:center;gap:16px">
-    <div style="flex-shrink:0">{{ chatMascot }}</div>
-    <div style="display:flex;flex-direction:column;gap:4px">
-      <h1 style="margin:0;font-family:'Merriweather',Georgia,serif;font-weight:900;font-size:clamp(30px,5vw,40px);line-height:1.2;color:#07336D">Conversar con {{ name }}</h1>
-      <p style="margin:0;font-size:22px">Pregúnteme por un mensaje o una noticia.</p>
+<main data-screen-label="06 Conversar" style="max-width:820px;margin:0 auto;padding:16px 16px 48px;display:flex;flex-direction:column;gap:16px">
+  <div data-chat-head="1" style="display:flex;align-items:center;gap:12px;padding-bottom:10px;border-bottom:2px solid #EADCC0">
+    <div style="flex-shrink:0;width:52px;height:56px;display:flex;align-items:center;justify-content:center">{{ chatMascot }}</div>
+    <div style="display:flex;flex-direction:column;gap:2px;min-width:0">
+      <h1 style="margin:0;font-family:'Merriweather',Georgia,serif;font-weight:900;font-size:clamp(24px,4vw,32px);line-height:1.2;color:#07336D">Conversar con {{ name }}</h1>
+      <span style="font-size:18px;color:#5A4E48">Asistente del kit · Respuestas de ejemplo</span>
     </div>
   </div>
-  <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px;border-radius:10px;background:#DDE6F1">
-    <p style="margin:0;font-size:20px;line-height:1.4;flex:1 1 220px">Conversación de ejemplo. Las respuestas están preparadas.</p>
-    <button onClick="{{ scrollToChat }}" style="display:flex;align-items:center;gap:8px;min-height:56px;padding:8px 16px;border-radius:10px;background:#FFFFFF;color:#07336D;border:3px solid #07336D;font-size:20px;font-weight:700;cursor:pointer;flex-shrink:0" style-hover="background:#FFF6E3" style-focus="outline:4px solid #07336D;outline-offset:3px">
-      <span>Hacer una pregunta</span>
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14 M19 12l-7 7-7-7"></path></svg>
-    </button>
-  </div>
-  <div role="log" aria-live="polite" style="display:flex;flex-direction:column;gap:18px">
+  <div role="log" aria-live="polite" style="display:flex;flex-direction:column;gap:16px">
     <sc-for list="{{ msgs }}" as="msg" hint-placeholder-count="4">
       <sc-if value="{{ msg.isBot }}" hint-placeholder-val="{{ true }}">
-        <div data-msg-id="{{ msg.id }}" style="display:flex;align-items:flex-start;gap:10px;max-width:94%">
-          <div style="flex-shrink:0;width:56px">{{ msg.avatar }}</div>
-          <div style="display:flex;flex-direction:column;gap:8px;min-width:0">
-            <span style="font-size:20px;font-weight:700;color:#07336D">{{ name }}</span>
-            <div style="background:#FFFFFF;border:3px solid #EADCC0;border-radius:4px 14px 14px 14px;padding:16px 18px;font-size:24px;line-height:1.5;white-space:pre-line;text-wrap:pretty">{{ msg.text }}</div>
-            <div style="display:flex;flex-wrap:wrap;gap:10px">
-              <button onClick="{{ msg.listen }}" aria-pressed="{{ msg.on }}" style="display:flex;align-items:center;gap:8px;min-height:56px;padding:8px 18px;border-radius:10px;background:{{ msg.bg }};color:{{ msg.fg }};border:3px solid #07336D;font-size:22px;font-weight:700;cursor:pointer" style-focus="outline:4px solid #07336D;outline-offset:3px">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ msg.icon }}"></path></svg>
-                <span>{{ msg.label }}</span>
+        <div data-msg-id="{{ msg.id }}" style="display:flex;flex-direction:column;gap:8px;max-width:96%">
+          <div style="display:flex;align-items:center;gap:8px">
+            <div style="flex-shrink:0;width:38px;height:40px;display:flex;align-items:center;justify-content:center">{{ msg.avatar }}</div>
+            <span style="font-size:19px;font-weight:700;color:#07336D">{{ name }}</span>
+          </div>
+          <div style="background:#FFFFFF;border:2px solid #EADCC0;border-radius:4px 18px 18px 18px;padding:14px 16px;font-size:24px;line-height:1.48;white-space:pre-line;text-wrap:pretty">{{ msg.text }}</div>
+          <div style="display:flex;flex-wrap:wrap;gap:8px">
+            <button onClick="{{ msg.listen }}" aria-pressed="{{ msg.on }}" style="display:flex;align-items:center;gap:8px;min-height:52px;padding:6px 18px;border-radius:999px;background:{{ msg.bg }};color:{{ msg.fg }};border:2px solid #07336D;font-size:20px;font-weight:700;cursor:pointer" style-focus="outline:4px solid #07336D;outline-offset:3px">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ msg.icon }}"></path></svg>
+              <span>{{ msg.label }}</span>
+            </button>
+            <sc-if value="{{ msg.hasAction }}" hint-placeholder-val="{{ false }}">
+              <button onClick="{{ goPracticeChat }}" style="display:flex;align-items:center;gap:8px;min-height:52px;padding:6px 18px;border-radius:999px;background:#07336D;color:#FFFFFF;border:none;font-size:20px;font-weight:700;cursor:pointer" style-hover="background:#052752" style-focus="outline:4px solid #07336D;outline-offset:3px">
+                <span style="white-space:nowrap">Ir a Practicar</span>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14 M12 5l7 7-7 7"></path></svg>
               </button>
-              <sc-if value="{{ msg.hasAction }}" hint-placeholder-val="{{ false }}">
-                <button onClick="{{ goPracticeChat }}" style="display:flex;align-items:center;gap:10px;min-height:56px;padding:8px 20px;border-radius:10px;background:#07336D;color:#FFFFFF;border:none;font-size:22px;font-weight:700;cursor:pointer" style-hover="background:#052752" style-focus="outline:4px solid #07336D;outline-offset:3px">
-                  <span style="white-space:nowrap">Ir a Practicar</span>
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14 M12 5l7 7-7 7"></path></svg>
-                </button>
-              </sc-if>
-            </div>
+            </sc-if>
           </div>
         </div>
       </sc-if>
       <sc-if value="{{ msg.isUser }}" hint-placeholder-val="{{ false }}">
-        <div data-msg-id="{{ msg.id }}" style="align-self:flex-end;max-width:86%;display:flex;flex-direction:column;align-items:flex-end;gap:6px">
-          <span style="font-size:20px;font-weight:700;color:#5A4E48">Usted</span>
-          <div style="background:#07336D;color:#FFFFFF;border-radius:14px 4px 14px 14px;padding:16px 18px;font-size:24px;line-height:1.5;white-space:pre-line;text-wrap:pretty">{{ msg.text }}</div>
+        <div data-msg-id="{{ msg.id }}" style="align-self:flex-end;max-width:86%;display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+          <div style="background:#07336D;color:#FFFFFF;border-radius:20px 20px 4px 20px;padding:14px 18px;font-size:24px;line-height:1.45;white-space:pre-line;text-wrap:pretty">{{ msg.text }}</div>
         </div>
       </sc-if>
     </sc-for>
   </div>
-  <div data-chat-actions="1" style="display:flex;flex-direction:column;gap:14px;padding-top:18px;border-top:3px solid #EADCC0">
-    <span style="font-size:22px;font-weight:700;color:#07336D">Toque una pregunta o escriba la suya:</span>
-    <div style="display:flex;flex-direction:column;gap:12px">
-      <sc-for list="{{ quick }}" as="q" hint-placeholder-count="3">
-        <button onClick="{{ q.onClick }}" style="display:flex;align-items:center;gap:12px;min-height:64px;padding:10px 18px;border-radius:10px;background:#FFFFFF;color:#07336D;border:3px solid #07336D;font-size:24px;font-weight:700;text-align:left;cursor:pointer" style-hover="background:#DDE6F1" style-focus="outline:4px solid #07336D;outline-offset:3px">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0"><path d="{{ q.icon }}"></path></svg>
+  <div data-chat-actions="1" style="position:sticky;bottom:0;z-index:15;background:linear-gradient(180deg, rgba(255,246,227,0) 0%, #FFF6E3 16%, #FFF6E3 100%);display:flex;flex-direction:column;gap:10px;padding-top:12px">
+    <div style="display:flex;flex-wrap:wrap;gap:8px">
+      <sc-for list="{{ quick }}" as="q" hint-placeholder-count="2">
+        <button onClick="{{ q.onClick }}" style="display:flex;align-items:center;gap:8px;min-height:50px;padding:8px 14px;border-radius:999px;background:#FFFFFF;color:#07336D;border:2px solid #07336D;font-size:20px;font-weight:700;text-align:left;cursor:pointer;box-shadow:0 2px 6px rgba(7,51,109,0.08)" style-hover="background:#DDE6F1" style-focus="outline:4px solid #07336D;outline-offset:3px">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0"><path d="{{ q.icon }}"></path></svg>
           <span>{{ q.label }}</span>
         </button>
       </sc-for>
     </div>
-    <form onSubmit="{{ sendDraft }}" style="display:flex;flex-wrap:wrap;gap:12px;margin:0">
+    <form onSubmit="{{ sendDraft }}" style="display:flex;align-items:center;gap:8px;margin:0;padding:6px 8px 6px 16px;border-radius:22px;border:3px solid #07336D;background:#FFFFFF;box-shadow:0 4px 16px rgba(7,51,109,0.14)">
       <label for="chat-input" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Escriba su mensaje</label>
-      <input id="chat-input" value="{{ draft }}" onChange="{{ onDraft }}" placeholder="Escriba aquí" style="flex:1 1 260px;min-height:64px;padding:12px 16px;border-radius:10px;border:3px solid #5A4E48;background:#FFFFFF;color:#1E1816;font-size:24px" style-focus="outline:4px solid #07336D;outline-offset:2px;border-color:#07336D">
-      <div style="display:flex;gap:12px;flex:1 1 auto">
-        <button type="button" onClick="{{ micChat.onClick }}" aria-pressed="{{ micChat.on }}" style="flex:1 1 auto;display:flex;align-items:center;justify-content:center;gap:8px;min-height:64px;padding:10px 18px;border-radius:10px;background:{{ micChat.bg }};color:{{ micChat.fg }};border:3px solid #07336D;font-size:24px;font-weight:700;cursor:pointer" style-focus="outline:4px solid #07336D;outline-offset:3px">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z M19 10v2a7 7 0 0 1-14 0v-2 M12 19v3"></path></svg>
-          <span>{{ micChat.label }}</span>
-        </button>
-        <button type="submit" style="flex:1 1 auto;display:flex;align-items:center;justify-content:center;gap:8px;min-height:64px;padding:10px 20px;border-radius:10px;background:#07336D;color:#FFFFFF;border:none;font-size:24px;font-weight:700;cursor:pointer" style-hover="background:#052752" style-focus="outline:4px solid #07336D;outline-offset:3px">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13 M22 2l-7 20-4-9-9-4 20-7z"></path></svg>
-          <span>Enviar</span>
-        </button>
-      </div>
+      <input id="chat-input" value="{{ draft }}" onChange="{{ onDraft }}" placeholder="Pregúntele a {{ name }}…" style="flex:1 1 120px;min-width:0;min-height:48px;padding:4px 0;border:none;background:transparent;color:#1E1816;font-size:22px;outline:none">
+      <button type="button" onClick="{{ micChat.onClick }}" aria-pressed="{{ micChat.on }}" aria-label="{{ micChat.label }}" style="display:flex;align-items:center;justify-content:center;gap:6px;min-width:50px;min-height:50px;padding:0 12px;border-radius:14px;background:{{ micChat.bg }};color:{{ micChat.fg }};border:2px solid #07336D;font-size:18px;font-weight:700;cursor:pointer;flex-shrink:0" style-focus="outline:4px solid #07336D;outline-offset:2px">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z M19 10v2a7 7 0 0 1-14 0v-2 M12 19v3"></path></svg>
+        <span style="font-size:18px">{{ micChat.label }}</span>
+      </button>
+      <button type="submit" aria-label="Enviar mensaje" style="display:flex;align-items:center;justify-content:center;width:50px;height:50px;border-radius:14px;background:#07336D;color:#FFFFFF;border:none;cursor:pointer;flex-shrink:0" style-hover="background:#052752" style-focus="outline:4px solid #07336D;outline-offset:2px">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5 M5 12l7-7 7 7"></path></svg>
+      </button>
     </form>
   </div>
 </main>
@@ -1560,16 +1549,15 @@ class Component extends DCLogic {
       nextStep: () => this.go('lesson', { step: st.step + 1 }),
       practiceThis: () => this.startPractice('lesson', L.practice),
 
-      chatMascot: this.M({ size: 96, arm: 'wave', mouth: /^[ubc]/.test(sp) && sp !== '' ? 'talk' : 'smile' }),
+      chatMascot: this.M({ size: 52, shadow: false, arm: 'wave', mouth: /^[ubc]/.test(sp) && sp !== '' ? 'talk' : 'smile' }),
       msgs: this.msgs().map(m => {
         const li = this.listen(m.id, m.text);
         return { id: m.id, text: m.text, isBot: m.from === 'bot', isUser: m.from === 'user', hasAction: !!m.action, listen: li.onClick, label: li.label, icon: li.icon, on: li.on, bg: li.bg, fg: li.fg,
-          avatar: this.M({ size: 56, shadow: false, still: !li.on, mouth: li.on ? 'talk' : 'smile' }) };
+          avatar: this.M({ size: 38, shadow: false, still: !li.on, mouth: li.on ? 'talk' : 'smile' }) };
       }),
       quick: [
         { label: '¿Cómo verifico una noticia?', icon: IC.search, onClick: () => this.quick('verify') },
-        { label: 'Quiero practicar', icon: IC.target, onClick: () => this.quick('practice') },
-        { label: 'Volver al menú', icon: IC.home, onClick: () => this.quick('menu') }
+        { label: 'Quiero practicar', icon: IC.target, onClick: () => this.quick('practice') }
       ],
       draft: st.draft,
       onDraft: e => this.setState({ draft: e.target.value }),
