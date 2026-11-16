@@ -159,14 +159,12 @@ button,input,textarea{font-family:inherit}
   main[data-screen-label^="05"] > div:nth-child(3) > span:first-child{width:48px !important;height:48px !important}
   main[data-screen-label^="05"] > div:nth-child(3) p{font-size:24px !important;line-height:1.42 !important}
 
-  /* 06 Conversar: interfaz tipo Claude / ChatGPT en celular */
-  main[data-screen-label^="06"]{padding:10px 12px 90px !important;gap:12px !important;min-height:100svh}
-  main[data-screen-label^="06"] [data-chat-head]{padding-right:148px}
+  /* 06 Conversar: interfaz tipo Claude / ChatGPT en celular con barra de chat 100% fija */
+  main[data-screen-label^="06"]{padding:10px 12px 260px !important;gap:12px !important;min-height:100svh}
   main[data-screen-label^="06"] [data-chat-head] svg{width:46px !important;height:50px !important}
   main[data-screen-label^="06"] h1{font-size:22px !important}
   main[data-screen-label^="06"] [role="log"]{flex:1}
-  main[data-screen-label^="06"] [data-chat-actions]{position:sticky !important;bottom:calc(74px + env(safe-area-inset-bottom, 0px)) !important;z-index:15;background:linear-gradient(180deg, rgba(255,246,227,0) 0%, #FFF6E3 14%, #FFF6E3 100%);padding:10px 0 8px !important;margin-top:auto}
-  main[data-screen-label^="06"] ~ [data-fab]{top:10px !important;bottom:auto !important;right:12px !important;min-height:48px !important;padding:6px 12px !important;font-size:18px !important}
+  main[data-screen-label^="06"] [data-chat-actions]{position:fixed !important;left:0 !important;right:0 !important;bottom:calc(74px + env(safe-area-inset-bottom, 0px)) !important;z-index:20 !important;background:#FFF6E3 !important;border-top:2px solid #EADCC0;padding:10px 12px 10px !important;margin:0 !important}
 
   /* 07 Practicar: ejemplo y pregunta visibles en pantalla */
   main[data-screen-label^="07"]{padding:2px 14px 32px !important;gap:10px !important}
@@ -184,7 +182,7 @@ button,input,textarea{font-family:inherit}
   main[data-screen-label^="08"] fieldset button span{font-size:20px !important}
 
   /* Boton flotante y ventana emergente del tutorial en celular */
-  main[data-screen-label]:not([data-screen-label^="01"]){padding-bottom:152px !important}
+  main[data-screen-label]:not([data-screen-label^="01"]):not([data-screen-label^="06"]){padding-bottom:152px !important}
   [data-fab]{right:12px !important;bottom:14px !important;min-height:56px !important;padding:8px 16px !important;font-size:20px !important;gap:8px !important}
   header ~ [data-fab]{bottom:calc(86px + env(safe-area-inset-bottom, 0px)) !important}
   [data-video-modal]{padding:10px !important}
@@ -534,7 +532,7 @@ button,input,textarea{font-family:inherit}
     </div>
     <form onSubmit="{{ sendDraft }}" style="display:flex;align-items:center;gap:8px;margin:0;padding:6px 8px 6px 16px;border-radius:22px;border:3px solid #07336D;background:#FFFFFF;box-shadow:0 4px 16px rgba(7,51,109,0.14)">
       <label for="chat-input" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Escriba su mensaje</label>
-      <input id="chat-input" value="{{ draft }}" onChange="{{ onDraft }}" placeholder="Pregúntele a {{ name }}…" style="flex:1 1 120px;min-width:0;min-height:48px;padding:4px 0;border:none;background:transparent;color:#1E1816;font-size:22px;outline:none">
+      <input id="chat-input" value="{{ draft }}" onChange="{{ onDraft }}" placeholder="Escriba aquí…" style="flex:1 1 120px;min-width:0;min-height:48px;padding:4px 0;border:none;background:transparent;color:#1E1816;font-size:22px;outline:none">
       <button type="button" onClick="{{ micChat.onClick }}" aria-pressed="{{ micChat.on }}" aria-label="{{ micChat.label }}" style="display:flex;align-items:center;justify-content:center;gap:6px;min-width:50px;min-height:50px;padding:0 12px;border-radius:14px;background:{{ micChat.bg }};color:{{ micChat.fg }};border:2px solid #07336D;font-size:18px;font-weight:700;cursor:pointer;flex-shrink:0" style-focus="outline:4px solid #07336D;outline-offset:2px">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z M19 10v2a7 7 0 0 1-14 0v-2 M12 19v3"></path></svg>
         <span style="font-size:18px">{{ micChat.label }}</span>
@@ -1472,7 +1470,7 @@ class Component extends DCLogic {
       showBar: s !== 'welcome',
       showHome: s !== 'welcome' && s !== 'menu',
       showVideoHint: !st.tutorialVisto,
-      showFab: s !== 'video' && !st.vModal && (s !== 'welcome' || st.tutorialVisto),
+      showFab: s !== 'video' && s !== 'chat' && !st.vModal && (s !== 'welcome' || st.tutorialVisto),
       isVideoModal: !!st.vModal,
       openVideoModal: this.openVideoModal,
       closeVideoModal: this.closeVideoModal,
