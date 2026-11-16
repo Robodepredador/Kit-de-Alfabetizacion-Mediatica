@@ -69,8 +69,7 @@ button,input,textarea{font-family:inherit}
   main[data-screen-label^="03"],
   main[data-screen-label^="04"]{display:grid !important;grid-template-columns:1fr 1fr;align-content:start;column-gap:18px}
   main[data-screen-label^="03"] > h1,
-  main[data-screen-label^="04"] > h1,
-  main[data-screen-label^="03"] > button:last-of-type{grid-column:1/-1}
+  main[data-screen-label^="04"] > h1{grid-column:1/-1}
 
   /* Practicar: el ejemplo a la izquierda, pregunta y opciones a la derecha,
      para poder compararlos sin desplazar la pantalla */
@@ -184,6 +183,16 @@ button,input,textarea{font-family:inherit}
   main[data-screen-label^="08"] fieldset button{min-height:118px !important;padding:10px 4px !important}
   main[data-screen-label^="08"] fieldset button svg{width:50px !important;height:50px !important}
   main[data-screen-label^="08"] fieldset button span{font-size:20px !important}
+
+  /* Boton flotante y ventana emergente del tutorial en celular */
+  main[data-screen-label]:not([data-screen-label^="01"]){padding-bottom:92px !important}
+  [data-fab]{right:12px !important;bottom:12px !important;min-height:56px !important;padding:8px 16px !important;font-size:20px !important;gap:8px !important}
+  [data-video-modal]{padding:10px !important}
+  [data-modal-card] [data-stage]{flex-wrap:nowrap !important;min-height:128px !important;padding:10px !important;gap:10px !important}
+  [data-modal-card] [data-stage] > div:first-child svg{width:70px !important;height:78px !important}
+  [data-modal-card] [data-stage] > div:last-child{flex:1 1 0 !important;min-width:0 !important;gap:6px !important}
+  [data-modal-card] [data-stage] > div:last-child span{font-size:19px !important;line-height:1.2 !important}
+  [data-modal-card] [data-stage] + p{min-height:88px !important;padding:10px 12px !important;font-size:22px !important;line-height:1.28 !important}
 }
 </style>
 </helmet>
@@ -243,7 +252,9 @@ button,input,textarea{font-family:inherit}
         <span>Empezar</span>
         <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14 M12 5l7 7-7 7"></path></svg>
       </button>
-      <p style="margin:0;font-size:20px;color:#5A4E48">Primero verá un video corto de 1 minuto.</p>
+      <sc-if value="{{ showVideoHint }}" hint-placeholder-val="{{ true }}">
+        <p style="margin:0;font-size:20px;color:#5A4E48">Primero verá un video corto de 1 minuto.</p>
+      </sc-if>
       <button onClick="{{ listenWelcome.onClick }}" aria-pressed="{{ listenWelcome.on }}" aria-label="{{ listenWelcome.ariaLabel }}" style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:64px;padding:10px 22px;border-radius:10px;background:{{ listenWelcome.bg }};color:{{ listenWelcome.fg }};border:3px solid #07336D;font-size:24px;font-weight:700;cursor:pointer" style-hover="background:#DDE6F1" style-focus="outline:4px solid #07336D;outline-offset:3px">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ listenWelcome.icon }}"></path></svg>
         <span>{{ listenWelcome.label }}</span>
@@ -388,10 +399,6 @@ button,input,textarea{font-family:inherit}
       <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#07336D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex-shrink:0"><path d="M9 18l6-6-6-6"></path></svg>
     </button>
   </sc-for>
-  <button onClick="{{ openVideo }}" style="display:flex;align-items:center;justify-content:center;gap:12px;min-height:64px;padding:12px 20px;margin-top:8px;border-radius:10px;background:transparent;color:#07336D;border:3px dashed #07336D;font-size:24px;font-weight:700;cursor:pointer" style-hover="background:#FFFFFF" style-focus="outline:4px solid #07336D;outline-offset:3px">
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 1 0 0-20z M10 8l6 4-6 4z"></path></svg>
-    <span>¿Cómo se usa? Ver video de 1 minuto</span>
-  </button>
 </main>
 </sc-if>
 
@@ -709,6 +716,121 @@ button,input,textarea{font-family:inherit}
   </div>
 </sc-if>
 
+<sc-if value="{{ showFab }}" hint-placeholder-val="{{ false }}">
+  <button data-fab="1" onClick="{{ openVideoModal }}" aria-label="Abrir ventana emergente: ¿Cómo se usa?" style="position:fixed;right:20px;bottom:20px;z-index:25;display:flex;align-items:center;gap:10px;min-height:64px;padding:12px 22px;border-radius:999px;background:#07336D;color:#FFFFFF;border:3px solid #FFFFFF;font-size:22px;font-weight:700;cursor:pointer;box-shadow:0 8px 24px rgba(7,51,109,0.42)" style-hover="background:#052752" style-focus="outline:4px solid #E69277;outline-offset:3px">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 1 0 0-20z M10 8l6 4-6 4z"></path></svg>
+    <span>¿Cómo se usa?</span>
+  </button>
+</sc-if>
+
+<sc-if value="{{ isVideoModal }}" hint-placeholder-val="{{ false }}">
+  <div data-video-modal="1" role="dialog" aria-modal="true" aria-label="Tutorial: ¿Cómo se usa?" onClick="{{ closeVideoModal }}" style="position:fixed;inset:0;z-index:40;background:rgba(30,24,22,0.72);display:flex;align-items:center;justify-content:center;padding:16px;overflow-y:auto">
+    <div data-modal-card="1" onClick="{{ stopModalProp }}" style="background:#FFF6E3;border:4px solid #07336D;border-radius:16px;width:100%;max-width:820px;max-height:92vh;overflow-y:auto;box-shadow:0 16px 48px rgba(0,0,0,0.45);display:flex;flex-direction:column">
+      <div style="background:#07336D;color:#FFFFFF;padding:12px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;top:0;z-index:2">
+        <div style="display:flex;flex-direction:column;gap:2px">
+          <span style="font-family:'Merriweather',Georgia,serif;font-size:24px;font-weight:900;line-height:1.2">¿Cómo se usa?</span>
+          <span style="font-size:18px;font-weight:700;color:#DDE6F1">Parte {{ vNum }} de 8</span>
+        </div>
+        <button onClick="{{ closeVideoModal }}" aria-label="Cerrar ventana del tutorial" style="display:flex;align-items:center;gap:8px;min-height:56px;padding:8px 16px;border-radius:10px;background:#FFFFFF;color:#07336D;border:none;font-size:22px;font-weight:700;cursor:pointer;flex-shrink:0" style-hover="background:#FFF6E3" style-focus="outline:4px solid #E69277;outline-offset:3px">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18 M6 6l12 12"></path></svg>
+          <span>Cerrar</span>
+        </button>
+      </div>
+      <div style="padding:18px;display:flex;flex-direction:column;gap:14px">
+        <div aria-hidden="true" style="display:grid;grid-template-columns:repeat(8,1fr);gap:6px">
+          <sc-for list="{{ vProgress }}" as="vp" hint-placeholder-count="8">
+            <span style="height:12px;border-radius:3px;border:2px solid #07336D;background:{{ vp.bg }}"></span>
+          </sc-for>
+        </div>
+        <div style="background:#FFFFFF;border:3px solid #07336D;border-radius:12px;overflow:hidden">
+          <div data-stage style="display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:16px 28px;padding:20px 16px;min-height:260px">
+            <div style="flex:0 0 auto;display:flex;justify-content:center">{{ videoMascot }}</div>
+            <div style="flex:1 1 260px;max-width:420px;display:flex;flex-direction:column;align-items:center;gap:14px">
+              <sc-if value="{{ vs1 }}" hint-placeholder-val="{{ true }}">
+                <span style="font-family:'Merriweather',Georgia,serif;font-size:40px;font-weight:900;color:#07336D">{{ name }}</span>
+                <span style="font-size:24px;font-weight:700;text-align:center">Su guía en el kit</span>
+              </sc-if>
+              <sc-if value="{{ vs2 }}" hint-placeholder-val="{{ false }}">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%">
+                  <div style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 8px;border-radius:10px;background:#DDE6F1">
+                    <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#07336D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z M17 2l-5 5-5-5"></path></svg>
+                    <span style="font-size:20px;font-weight:700">Televisión</span>
+                  </div>
+                  <div style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 8px;border-radius:10px;background:#DCEFEC">
+                    <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#07336D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z M11 18h2"></path></svg>
+                    <span style="font-size:20px;font-weight:700">Celular</span>
+                  </div>
+                </div>
+                <span style="font-size:22px;font-weight:700;text-align:center;color:#07336D">Noticias falsas · Cómo nos muestran</span>
+              </sc-if>
+              <sc-if value="{{ vs3 }}" hint-placeholder-val="{{ false }}">
+                <div style="width:100%;background:#07336D;border-radius:10px;padding:16px;display:flex;align-items:center;gap:12px">
+                  <span style="display:flex;align-items:center;gap:8px;padding:8px 16px;border-radius:8px;background:#FFFFFF;color:#07336D;font-size:22px;font-weight:700;outline:5px solid #E69277;outline-offset:4px">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5 M12 19l-7-7 7-7"></path></svg>
+                    Volver
+                  </span>
+                </div>
+                <span style="font-size:22px;font-weight:700;text-align:center">Siempre arriba, a la izquierda</span>
+              </sc-if>
+              <sc-if value="{{ vs4 }}" hint-placeholder-val="{{ false }}">
+                <div style="width:100%;display:flex;flex-direction:column;gap:8px;padding:16px;border-radius:10px;background:#FFF6E3">
+                  <span style="height:12px;width:90%;border-radius:4px;background:#EADCC0"></span>
+                  <span style="height:12px;width:75%;border-radius:4px;background:#EADCC0"></span>
+                  <span style="margin-top:8px;align-self:flex-start;display:flex;align-items:center;gap:8px;padding:8px 18px;border-radius:8px;background:#FFFFFF;border:3px solid #07336D;color:#07336D;font-size:22px;font-weight:700;outline:5px solid #E69277;outline-offset:4px">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4V5z M15.54 8.46a5 5 0 0 1 0 7.07 M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
+                    Escuchar
+                  </span>
+                </div>
+              </sc-if>
+              <sc-if value="{{ vs5 }}" hint-placeholder-val="{{ false }}">
+                <div style="width:100%;display:flex;flex-direction:column;gap:10px">
+                  <span style="align-self:flex-end;padding:10px 14px;border-radius:10px;background:#07336D;color:#FFFFFF;font-size:20px">¿Esto es verdad?</span>
+                  <span style="align-self:flex-start;padding:10px 14px;border-radius:10px;background:#FFF6E3;border:2px solid #EADCC0;font-size:20px">Veamos juntos las señales.</span>
+                  <span style="align-self:flex-start;display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:8px;background:#FFFFFF;border:3px solid #07336D;color:#07336D;font-size:20px;font-weight:700;outline:5px solid #E69277;outline-offset:4px">¿Cómo verifico una noticia?</span>
+                </div>
+              </sc-if>
+              <sc-if value="{{ vs6 }}" hint-placeholder-val="{{ false }}">
+                <div style="width:100%;display:flex;flex-direction:column;gap:12px;padding:16px;border-radius:10px;background:#FFF6E3">
+                  <span style="font-size:20px;font-weight:700;color:#07336D">Paso 1 de 3</span>
+                  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">
+                    <span style="height:10px;border-radius:3px;background:#07336D"></span>
+                    <span style="height:10px;border-radius:3px;border:2px solid #07336D;background:#FFFFFF"></span>
+                    <span style="height:10px;border-radius:3px;border:2px solid #07336D;background:#FFFFFF"></span>
+                  </div>
+                  <span style="align-self:flex-end;display:flex;align-items:center;gap:8px;padding:8px 18px;border-radius:8px;background:#07336D;color:#FFFFFF;font-size:22px;font-weight:700;outline:5px solid #E69277;outline-offset:4px">
+                    Siguiente
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14 M12 5l7 7-7 7"></path></svg>
+                  </span>
+                </div>
+              </sc-if>
+              <sc-if value="{{ vs7 }}" hint-placeholder-val="{{ false }}">
+                <div style="width:100%;display:flex;flex-direction:column;gap:8px">
+                  <span style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;border:3px solid #EADCC0;font-size:20px;font-weight:700"><span style="display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;border:2px solid #07336D;color:#07336D">A</span>Confiable</span>
+                  <span style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;border:3px solid #07336D;background:#DDE6F1;font-size:20px;font-weight:700;outline:5px solid #E69277;outline-offset:3px"><span style="display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:#07336D;color:#FFFFFF">B</span>No confiable</span>
+                </div>
+              </sc-if>
+              <sc-if value="{{ vs8 }}" hint-placeholder-val="{{ false }}">
+                <span style="font-family:'Merriweather',Georgia,serif;font-size:38px;font-weight:900;color:#07336D;text-align:center;line-height:1.2">¡Empecemos!</span>
+              </sc-if>
+            </div>
+          </div>
+          <p aria-live="polite" style="margin:0;min-height:120px;display:flex;align-items:center;justify-content:center;text-align:center;padding:16px 20px;background:#07336D;color:#FFFFFF;font-size:clamp(22px,3vw,28px);font-weight:700;line-height:1.38;text-wrap:balance">{{ vText }}</p>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:10px">
+          <button onClick="{{ vMain.onClick }}" style="flex:1 1 220px;display:flex;align-items:center;justify-content:center;gap:10px;min-height:64px;padding:10px 20px;border-radius:10px;background:#07336D;color:#FFFFFF;border:none;font-size:24px;font-weight:700;cursor:pointer;box-shadow:0 4px 0 #041F44" style-hover="background:#052752" style-focus="outline:4px solid #07336D;outline-offset:4px">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ vMain.icon }}"></path></svg>
+            <span>{{ vMain.label }}</span>
+          </button>
+          <button onClick="{{ vRestart }}" style="flex:1 1 200px;display:flex;align-items:center;justify-content:center;gap:10px;min-height:64px;padding:10px 18px;border-radius:10px;background:#FFFFFF;color:#07336D;border:3px solid #07336D;font-size:22px;font-weight:700;cursor:pointer" style-hover="background:#DDE6F1" style-focus="outline:4px solid #07336D;outline-offset:3px">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 4v6h6 M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+            <span>Ver desde el principio</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;assistantName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Lupita&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Contenido&quot;},&quot;textSize&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Normal&quot;,&quot;Grande&quot;],&quot;default&quot;:&quot;Normal&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Accesibilidad&quot;},&quot;animations&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Accesibilidad&quot;},&quot;videoVoice&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Video&quot;},&quot;startScreen&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Bienvenida&quot;,&quot;Video&quot;,&quot;Menú&quot;,&quot;Aprender&quot;,&quot;Tema&quot;,&quot;Conversar&quot;,&quot;Practicar&quot;,&quot;Encuesta&quot;,&quot;Gracias&quot;],&quot;default&quot;:&quot;Bienvenida&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Revisión&quot;}}">
@@ -919,13 +1041,21 @@ const SCENES = [
 const SCREENS = { 'Bienvenida': 'welcome', 'Video': 'video', 'Menú': 'menu', 'Aprender': 'learn', 'Tema': 'lesson', 'Conversar': 'chat', 'Practicar': 'practice', 'Encuesta': 'survey', 'Gracias': 'thanks' };
 
 class Component extends DCLogic {
-  state = { screen: null, lesson: 0, step: 0, act: 0, answers: {}, done: false, from: 'menu', videoFrom: 'welcome', msgs: null, draft: '', speaking: null, listening: null, votes: {}, comment: '', notice: '', vScene: 0, vPlaying: false, vEnded: false };
+  state = { screen: null, lesson: 0, step: 0, act: 0, answers: {}, done: false, from: 'menu', videoFrom: 'welcome', msgs: null, draft: '', speaking: null, listening: null, votes: {}, comment: '', notice: '', vScene: 0, vPlaying: false, vEnded: false, vModal: false, tutorialVisto: false };
 
   componentDidMount() {
     document.documentElement.lang = 'es';
+    let visto = false;
+    try { visto = localStorage.getItem('kit_lupita_tutorial_visto') === '1'; } catch (e) {}
+    if (visto) this.setState({ tutorialVisto: true });
     this.armarDesbloqueoAudio();
     this.getVideoEl();
     this.saludar();
+  }
+
+  marcarTutorialVisto() {
+    try { localStorage.setItem('kit_lupita_tutorial_visto', '1'); } catch (e) {}
+    if (!this.state.tutorialVisto) this.setState({ tutorialVisto: true });
   }
 
   getAudioEl() {
@@ -1034,7 +1164,7 @@ class Component extends DCLogic {
 
   go(screen, extra, cb) {
     this.stopVideo(); this.stopSpeak(); this.stopListen();
-    this.setState({ screen, notice: '', ...(extra || {}) }, () => {
+    this.setState({ screen, notice: '', vModal: false, ...(extra || {}) }, () => {
       window.scrollTo(0, 0);
       if (screen === 'welcome') this.saludar();
       if (screen === 'video') this.precargarVideo();
@@ -1201,7 +1331,7 @@ class Component extends DCLogic {
         try { v.currentTime = targetStart; } catch (e) {}
       }
       v.ontimeupdate = () => {
-        if (!this.state.vPlaying || this.screen() !== 'video') return;
+        if (!this.state.vPlaying || (this.screen() !== 'video' && !this.state.vModal)) return;
         const t = v.currentTime;
         let idx = 0;
         for (let k = SCENES.length - 1; k >= 0; k--) {
@@ -1252,7 +1382,25 @@ class Component extends DCLogic {
       this.setState({ vPlaying: false, speaking: this.state.speaking === 'video' ? null : this.state.speaking });
     }
   }
-  openVideo(from) { this.go('video', { videoFrom: from, vScene: 0, vEnded: false }, () => this.playScene(0, true)); }
+  openVideo(from) {
+    this.marcarTutorialVisto();
+    this.go('video', { videoFrom: from, vScene: 0, vEnded: false, vModal: false }, () => this.playScene(0, true));
+  }
+  openVideoModal = () => {
+    this.marcarTutorialVisto();
+    this.stopVideo();
+    this.stopSpeak();
+    this.stopListen();
+    this.setState({ vModal: true, vScene: 0, vEnded: false }, () => this.playScene(0, true));
+  };
+  closeVideoModal = () => {
+    this.stopVideo();
+    this.stopSpeak();
+    this.setState({ vModal: false });
+  };
+  stopModalProp = e => {
+    if (e && e.stopPropagation) e.stopPropagation();
+  };
 
   addMsgs(list) {
     this.stopSpeak();
@@ -1337,6 +1485,12 @@ class Component extends DCLogic {
       name,
       showBar: s !== 'welcome',
       showHome: s !== 'welcome' && s !== 'menu',
+      showVideoHint: !st.tutorialVisto,
+      showFab: s !== 'video' && !st.vModal && (s !== 'welcome' || st.tutorialVisto),
+      isVideoModal: !!st.vModal,
+      openVideoModal: this.openVideoModal,
+      closeVideoModal: this.closeVideoModal,
+      stopModalProp: this.stopModalProp,
       isWelcome: s === 'welcome', isVideo: s === 'video', isMenu: s === 'menu', isLearn: s === 'learn', isLesson: s === 'lesson',
       isChat: s === 'chat', isPractice: s === 'practice', isSurvey: s === 'survey', isThanks: s === 'thanks',
       goBack: this.goBack,
@@ -1359,8 +1513,17 @@ class Component extends DCLogic {
         ...this.listen('welcome', textoSaludo(name)),
         ariaLabel: (sp === 'welcome') ? 'Detener audio de saludo' : 'Escuchar saludo de Lupita'
       },
-      startTour: () => this.openVideo('welcome'),
-      openVideo: () => this.openVideo('menu'),
+      startTour: () => {
+        let visto = st.tutorialVisto;
+        try { if (localStorage.getItem('kit_lupita_tutorial_visto') === '1') visto = true; } catch (e) {}
+        if (visto) {
+          this.marcarTutorialVisto();
+          this.go('menu');
+        } else {
+          this.openVideo('welcome');
+        }
+      },
+      openVideo: this.openVideoModal,
 
       barMascot: this.M({ size: 50, shadow: false, still: true }),
       welcomeMascot: this.M({ size: 190, arm: sp === 'welcome' ? 'idle' : 'wave', mouth: sp === 'welcome' ? 'talk' : 'smile', label: name + ', una lupa sonriente' }),
@@ -1376,7 +1539,9 @@ class Component extends DCLogic {
       vText: sc.text(name),
       videoMascot: this.M({ size: 170, arm: sc.arm, mouth: vTalk ? 'talk' : sc.celebrate ? 'open' : 'smile', jump: !!sc.celebrate && st.vPlaying, sparkles: !!sc.celebrate }),
       vMain: st.vEnded
-        ? { label: 'Ir al menú', icon: IC.play, onClick: () => this.go('menu') }
+        ? (st.vModal
+            ? { label: 'Cerrar tutorial', icon: IC.play, onClick: this.closeVideoModal }
+            : { label: 'Ir al menú', icon: IC.play, onClick: () => this.go('menu') })
         : st.vPlaying
           ? { label: 'Pausar', icon: IC.pause, onClick: () => { this.stopVideo(); this.stopSpeak(); } }
           : { label: st.vScene === 0 ? 'Ver el video' : 'Seguir viendo', icon: IC.play, onClick: () => this.playScene(st.vScene) },
