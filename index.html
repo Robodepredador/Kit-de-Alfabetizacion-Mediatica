@@ -151,12 +151,11 @@ button,input,textarea{font-family:inherit}
   main[data-screen-label^="03"] > button > span:nth-child(2) > span:first-child{font-size:24px !important}
   main[data-screen-label^="03"] > button > span:nth-child(2) > span:last-child{font-size:20px !important;line-height:1.28 !important}
 
-  /* 05 Tema: contenido de lectura y boton Siguiente accesibles */
+  /* 05 Tema: contenido de lectura y boton Siguiente accesibles sin superposicion */
   main[data-screen-label^="05"]{padding:2px 14px 32px !important;gap:10px !important}
   main[data-screen-label^="05"] > div:first-child{gap:4px !important}
   main[data-screen-label^="05"] h1{font-size:25px !important}
-  main[data-screen-label^="05"] > div:nth-child(3){padding:14px 16px !important;gap:10px !important}
-  main[data-screen-label^="05"] > div:nth-child(3) > span:first-child{width:48px !important;height:48px !important}
+  main[data-screen-label^="05"] > div:nth-child(3){padding:16px !important;gap:12px !important}
   main[data-screen-label^="05"] > div:nth-child(3) p{font-size:24px !important;line-height:1.42 !important}
 
   /* 06 Conversar: interfaz tipo Claude / ChatGPT en celular con barra de chat 100% fija */
@@ -182,7 +181,8 @@ button,input,textarea{font-family:inherit}
   main[data-screen-label^="08"] fieldset button span{font-size:20px !important}
 
   /* Boton flotante y ventana emergente del tutorial en celular */
-  main[data-screen-label]:not([data-screen-label^="01"]):not([data-screen-label^="06"]){padding-bottom:152px !important}
+  main[data-screen-label]:not([data-screen-label^="01"]):not([data-screen-label^="06"]){padding-bottom:104px !important}
+  main[data-screen-label^="03"]{padding-bottom:152px !important}
   [data-fab]{right:12px !important;bottom:14px !important;min-height:56px !important;padding:8px 16px !important;font-size:20px !important;gap:8px !important}
   header ~ [data-fab]{bottom:calc(86px + env(safe-area-inset-bottom, 0px)) !important}
   [data-video-modal]{padding:10px !important}
@@ -456,12 +456,6 @@ button,input,textarea{font-family:inherit}
   </sc-if>
 
   <div style="display:flex;flex-wrap:wrap;gap:14px">
-    <sc-if value="{{ hasPrev }}" hint-placeholder-val="{{ false }}">
-      <button onClick="{{ prevStep }}" style="flex:1 1 180px;display:flex;align-items:center;justify-content:center;gap:10px;min-height:68px;padding:12px 20px;border-radius:10px;background:#FFFFFF;color:#07336D;border:3px solid #07336D;font-size:24px;font-weight:700;cursor:pointer" style-hover="background:#DDE6F1" style-focus="outline:4px solid #07336D;outline-offset:3px">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5 M12 19l-7-7 7-7"></path></svg>
-        <span>Anterior</span>
-      </button>
-    </sc-if>
     <sc-if value="{{ hasNext }}" hint-placeholder-val="{{ true }}">
       <button data-next-step="1" onClick="{{ nextStep }}" style="flex:2 1 220px;display:flex;align-items:center;justify-content:center;gap:12px;min-height:68px;padding:12px 24px;border-radius:10px;background:#07336D;color:#FFFFFF;border:none;font-size:26px;font-weight:700;cursor:pointer;box-shadow:0 4px 0 #041F44" style-hover="background:#052752" style-focus="outline:4px solid #07336D;outline-offset:4px">
         <span>Siguiente</span>
@@ -1470,7 +1464,7 @@ class Component extends DCLogic {
       showBar: s !== 'welcome',
       showHome: s !== 'welcome' && s !== 'menu',
       showVideoHint: !st.tutorialVisto,
-      showFab: s !== 'video' && s !== 'chat' && !st.vModal && (s !== 'welcome' || st.tutorialVisto),
+      showFab: !st.vModal && (s === 'menu' || (s === 'welcome' && st.tutorialVisto)),
       isVideoModal: !!st.vModal,
       openVideoModal: this.openVideoModal,
       closeVideoModal: this.closeVideoModal,
